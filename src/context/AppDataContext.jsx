@@ -1,126 +1,198 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { readJSON, writeJSON } from '../lib/storage.js'
-import { buildSeedCases, SEED_VERSION } from '../data/cases.js'
-import { CURRENT_STUDENT } from '../data/students.js'
-import { buildContextPack } from '../lib/caseHelpers.js'
+import { buildSeedPrecedents, PRECEDENTS_SEED_VERSION } from '../data/precedents.js'
+import { buildSeedApplications, APPLICATIONS_SEED_VERSION } from '../data/applications.js'
+import { studentById } from '../data/students.js'
+import { loadById } from '../data/semesterLoads.js'
+import { partnerCourseById } from '../data/partnerCourses.js'
 
 const AppDataContext = createContext(null)
 
-export const STAGES = ['Submitted', 'With Coordinator', 'Approved', 'Enrolled', 'Transcript Received']
+export const TODAY = '2026-07-28'
+export const CURRENT_YEAR = 2026
 
-function loadCases() {
-  const stored = readJSON('cases', null)
-  if (stored && stored.version === SEED_VERSION) return stored.cases
-  const seeded = buildSeedCases()
-  writeJSON('cases', { version: SEED_VERSION, cases: seeded })
+export const COURSE_STAGES = ['Submitted', 'With Staff', 'With Assessor']
+export const DECISION_STAGES = ['Approved', 'Denied', 'More Info Requested']
+
+function loadPrecedents() {
+  const stored = readJSON('precedents', null)
+  if (stored && stored.version === PRECEDENTS_SEED_VERSION) return stored.records
+  const seeded = buildSeedPrecedents()
+  writeJSON('precedents', { version: PRECEDENTS_SEED_VERSION, records: seeded })
   return seeded
 }
 
-const EMPTY_DRAFT = { courseIds: [], documents: {} }
+function loadApplications() {
+  const stored = readJSON('applications', null)
+  if (stored && stored.version === APPLICATIONS_SEED_VERSION) return stored.applications
+  const seeded = buildSeedApplications()
+  writeJSON('applications', { version: APPLICATIONS_SEED_VERSION, applications: seeded })
+  return seeded
+}
+
+const EMPTY_DRAFT = { loadId: null, documents: {} }
 
 export function AppDataProvider({ children }) {
   const [role, setRole] = useState(() => readJSON('role', 'student'))
-  const [cases, setCases] = useState(loadCases)
-  const [draftPlan, setDraftPlan] = useState(() => readJSON('studentDraft', EMPTY_DRAFT))
+  const [loggedInStudentId, setLoggedInStudentId] = useState(() => readJSON('loggedInStudentId', null))
+  const [precedents, setPrecedents] = useState(loadPrecedents)
+  const [applications, setApplications] = useState(loadApplications)
+  const [shortlistDrafts, setShortlistDrafts] = useState(() => readJSON('shortlistDrafts', {}))
 
   useEffect(() => writeJSON('role', role), [role])
-  useEffect(() => writeJSON('cases', { version: SEED_VERSION, cases }), [cases])
-  useEffect(() => writeJSON('studentDraft', draftPlan), [draftPlan])
+  useEffect(() => writeJSON('loggedInStudentId', loggedInStudentId), [loggedInStudentId])
+  useEffect(() => writeJSON('precedents', { version: PRECEDENTS_SEED_VERSION, records: precedents }), [precedents])
+  useEffect(
+    () => writeJSON('applications', { version: APPLICATIONS_SEED_VERSION, applications }),
+    [applications],
+  )
+  useEffect(() => writeJSON('shortlistDrafts', shortlistDrafts), [shortlistDrafts])
 
-  const currentStudentCase = useMemo(
-    () => cases.find((c) => c.studentId === CURRENT_STUDENT.id) ?? null,
-    [cases],
+  const currentStudent = useMemo(
+    () => (loggedInStudentId ? studentById(loggedInStudentId) : null),
+    [loggedInStudentId],
   )
 
-  function toggleCourse(courseId) {
-    setDraftPlan((prev) => {
-      const exists = prev.courseIds.includes(courseId)
+  const shortlistDraft = shortlistDrafts[loggedInStudentId] ?? EMPTY_DRAFT
+
+  const currentStudentApplication = useMemo(
+    () => applications.find((a) => a.studentId === loggedInStudentId) ?? null,
+    [applications, loggedInStudentId],
+  )
+
+  function login(studentId) {
+    setLoggedInStudentId(studentId)
+  }
+
+  function logout() {
+    setLoggedInStudentId(null)
+  }
+
+  function selectLoad(loadId) {
+    setShortlistDrafts((prev) => ({ ...prev, [loggedInStudentId]: { loadId, documents: {} } }))
+  }
+
+  function clearShortlist() {
+    setShortlistDrafts((prev) => ({ ...prev, [loggedInStudentId]: EMPTY_DRAFT }))
+  }
+
+  function toggleDocument(docId) {
+    setShortlistDrafts((prev) => {
+      const current = prev[loggedInStudentId] ?? EMPTY_DRAFT
       return {
         ...prev,
-        courseIds: exists ? prev.courseIds.filter((id) => id !== courseId) : [...prev.courseIds, courseId],
+        [loggedInStudentId]: { ...current, documents: { ...current.documents, [docId]: !current.documents[docId] } },
       }
     })
   }
 
-  function toggleDocument(docId) {
-    setDraftPlan((prev) => ({
-      ...prev,
-      documents: { ...prev.documents, [docId]: !prev.documents[docId] },
-    }))
-  }
-
-  function submitStudyPlan() {
-    const today = '2026-07-28'
-    const newCase = {
-      id: `case-${CURRENT_STUDENT.id}-${Date.now()}`,
-      studentId: CURRENT_STUDENT.id,
-      hostInstitution: '—',
-      courseIds: draftPlan.courseIds,
-      stage: 'Submitted',
-      documents: draftPlan.documents,
-      contextPack: null,
-      staffNote: null,
-      submittedDate: today,
-      lastUpdated: today,
-      timeline: [{ stage: 'Submitted', date: today, note: 'Study plan submitted for review.' }],
+  function submitShortlist() {
+    const draft = shortlistDrafts[loggedInStudentId]
+    if (!draft?.loadId) return
+    const load = loadById(draft.loadId)
+    const newApplication = {
+      id: `app-${loggedInStudentId}-${Date.now()}`,
+      studentId: loggedInStudentId,
+      institutionId: load.institutionId,
+      programId: load.programId,
+      submittedDate: TODAY,
+      documents: draft.documents,
+      courses: load.partnerCourseIds.map((partnerCourseId) => {
+        const partnerCourse = partnerCourseById(partnerCourseId)
+        return {
+          id: `crs-${partnerCourseId}-${loggedInStudentId}-${Date.now()}`,
+          partnerCourseId,
+          rmitUnitId: partnerCourse.rmitUnitId,
+          stage: 'Submitted',
+          staffNote: null,
+          assessorNote: null,
+          timeline: [{ stage: 'Submitted', date: TODAY, note: 'Shortlist submitted for review.' }],
+        }
+      }),
     }
-    setCases((prev) => [...prev.filter((c) => c.studentId !== CURRENT_STUDENT.id), newCase])
-    setDraftPlan(EMPTY_DRAFT)
+    setApplications((prev) => [...prev.filter((a) => a.studentId !== loggedInStudentId), newApplication])
+    setShortlistDrafts((prev) => ({ ...prev, [loggedInStudentId]: EMPTY_DRAFT }))
   }
 
-  function updateCase(caseId, stage, note) {
-    const today = '2026-07-28'
-    setCases((prev) =>
-      prev.map((c) =>
-        c.id === caseId
-          ? {
-              ...c,
-              stage,
-              staffNote: note ?? c.staffNote,
-              lastUpdated: today,
-              timeline: [...c.timeline, { stage, date: today, note }],
-            }
-          : c,
+  function updateCourse(applicationId, courseId, updater) {
+    setApplications((prev) =>
+      prev.map((app) =>
+        app.id !== applicationId
+          ? app
+          : { ...app, courses: app.courses.map((c) => (c.id === courseId ? updater(c) : c)) },
       ),
     )
   }
 
-  function approveCase(caseId) {
-    updateCase(caseId, 'Approved', 'Approved — high confidence match.')
-  }
-
-  function escalateCase(caseId) {
-    setCases((prev) =>
-      prev.map((c) => (c.id === caseId ? { ...c, contextPack: buildContextPack(c) } : c)),
+  function openCourseAsStaff(applicationId, courseId) {
+    updateCourse(applicationId, courseId, (c) =>
+      c.stage === 'Submitted'
+        ? {
+            ...c,
+            stage: 'With Staff',
+            timeline: [...c.timeline, { stage: 'With Staff', date: TODAY, note: 'Opened for staff review.' }],
+          }
+        : c,
     )
-    updateCase(caseId, 'With Coordinator', 'Escalated to course coordinator with context pack.')
   }
 
-  function advanceCase(caseId) {
-    const target = cases.find((c) => c.id === caseId)
-    if (!target) return
-    const idx = STAGES.indexOf(target.stage)
-    const next = STAGES[idx + 1]
-    if (!next) return
-    const notes = {
-      Enrolled: 'Enrolment confirmed with host institution.',
-      'Transcript Received': 'Host transcript received.',
+  function forwardCourseToAssessor(applicationId, courseId, note) {
+    updateCourse(applicationId, courseId, (c) => ({
+      ...c,
+      staffNote: note || c.staffNote,
+      stage: 'With Assessor',
+      timeline: [
+        ...c.timeline,
+        { stage: 'With Assessor', date: TODAY, note: 'Forwarded to assessor with staff notes.' },
+      ],
+    }))
+  }
+
+  function decideCourse(applicationId, courseId, decision, note) {
+    updateCourse(applicationId, courseId, (c) => ({
+      ...c,
+      assessorNote: note || c.assessorNote,
+      stage: decision,
+      timeline: [...c.timeline, { stage: decision, date: TODAY, note: `${decision} by assessor.` }],
+    }))
+
+    if (decision === 'Approved') {
+      const application = applications.find((a) => a.id === applicationId)
+      const courseEntry = application?.courses.find((c) => c.id === courseId)
+      if (application && courseEntry) {
+        setPrecedents((prev) => [
+          ...prev,
+          {
+            id: `prec-${courseEntry.partnerCourseId}-${Date.now()}`,
+            programId: application.programId,
+            institutionId: application.institutionId,
+            partnerCourseId: courseEntry.partnerCourseId,
+            rmitUnitId: courseEntry.rmitUnitId,
+            year: CURRENT_YEAR,
+          },
+        ])
+      }
     }
-    updateCase(caseId, next, notes[next] ?? `Advanced to ${next}.`)
   }
 
   const value = {
     role,
     setRole,
-    cases,
-    currentStudentCase,
-    draftPlan,
-    toggleCourse,
+    loggedInStudentId,
+    currentStudent,
+    login,
+    logout,
+    precedents,
+    applications,
+    shortlistDraft,
+    selectLoad,
+    clearShortlist,
     toggleDocument,
-    submitStudyPlan,
-    approveCase,
-    escalateCase,
-    advanceCase,
+    submitShortlist,
+    currentStudentApplication,
+    openCourseAsStaff,
+    forwardCourseToAssessor,
+    decideCourse,
   }
 
   return <AppDataContext.Provider value={value}>{children}</AppDataContext.Provider>
