@@ -4,6 +4,7 @@ import Header from './components/Header.jsx'
 import LoginPage from './pages/student/LoginPage.jsx'
 import ProfilePage from './pages/student/ProfilePage.jsx'
 import RecommendationsPage from './pages/student/RecommendationsPage.jsx'
+import PastCombinationsPage from './pages/student/PastCombinationsPage.jsx'
 import InstitutionDetailPage from './pages/student/InstitutionDetailPage.jsx'
 import SubmissionPage from './pages/student/SubmissionPage.jsx'
 import StudentStatusPage from './pages/student/StudentStatusPage.jsx'
@@ -80,6 +81,9 @@ function AppShell() {
         {!showLogin && role === 'student' && studentPage === 'profile' && <ProfilePage onNavigate={navigate} />}
         {!showLogin && role === 'student' && studentPage === 'recommendations' && (
           <RecommendationsPage onViewInstitution={viewInstitution} />
+        )}
+        {!showLogin && role === 'student' && studentPage === 'combinations' && (
+          <PastCombinationsPage onNavigate={navigate} />
         )}
         {!showLogin && role === 'student' && studentPage === 'institution' && (
           <InstitutionDetailPage

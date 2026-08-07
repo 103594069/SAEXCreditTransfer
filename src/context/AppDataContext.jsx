@@ -1,6 +1,10 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { readJSON, writeJSON } from '../lib/storage.js'
 import { buildSeedPrecedents, PRECEDENTS_SEED_VERSION } from '../data/precedents.js'
+import {
+  buildSeedCombinationPrecedents,
+  COMBINATION_PRECEDENTS_SEED_VERSION,
+} from '../data/combinationPrecedents.js'
 import { buildSeedApplications, APPLICATIONS_SEED_VERSION } from '../data/applications.js'
 import { studentById } from '../data/students.js'
 import { loadById } from '../data/semesterLoads.js'
@@ -23,6 +27,14 @@ function loadPrecedents() {
   return seeded
 }
 
+function loadCombinationPrecedents() {
+  const stored = readJSON('combinationPrecedents', null)
+  if (stored && stored.version === COMBINATION_PRECEDENTS_SEED_VERSION) return stored.records
+  const seeded = buildSeedCombinationPrecedents()
+  writeJSON('combinationPrecedents', { version: COMBINATION_PRECEDENTS_SEED_VERSION, records: seeded })
+  return seeded
+}
+
 function loadApplications() {
   const stored = readJSON('applications', null)
   if (stored && stored.version === APPLICATIONS_SEED_VERSION) return stored.applications
@@ -37,6 +49,7 @@ export function AppDataProvider({ children }) {
   const [role, setRole] = useState(() => readJSON('role', 'student'))
   const [loggedInStudentId, setLoggedInStudentId] = useState(() => readJSON('loggedInStudentId', null))
   const [precedents, setPrecedents] = useState(loadPrecedents)
+  const [combinationPrecedents] = useState(loadCombinationPrecedents)
   const [applications, setApplications] = useState(loadApplications)
   const [shortlistDrafts, setShortlistDrafts] = useState(() => readJSON('shortlistDrafts', {}))
 
@@ -190,6 +203,7 @@ export function AppDataProvider({ children }) {
     login,
     logout,
     precedents,
+    combinationPrecedents,
     applications,
     shortlistDraft,
     selectLoad,

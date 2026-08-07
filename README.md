@@ -46,11 +46,17 @@ in the others (e.g. the student's status tracker, the shared status board).
    historical outcomes) and a **content overlap score** (simple topic-keyword
    match against the RMIT unit) — shown side by side with a "why" note each,
    never blended into one number.
-5. *My Shortlist* — review the load and submit; blocked until a document
+5. *Past Combinations* — browse full course packages previously approved as
+   a unit (not just individual course precedent), ranked by how established
+   each combination is. Each course is flagged "Already completed" if its
+   mapped unit isn't in the logged-in student's remaining units, and any
+   combination can be shortlisted directly — reuses the same shortlist/
+   submission flow as picking an institution from Recommendations.
+6. *My Shortlist* — review the load and submit; blocked until a document
    checklist is fully checked. Students in "On Track" (preliminary) status
    see a persistent banner reminding them the application is exploratory
    until they cross the 72cp threshold.
-6. *My Application* — a live, per-course stage tracker. The Profile page
+7. *My Application* — a live, per-course stage tracker. The Profile page
    links straight here once an application exists, instead of restarting it.
 
 **Staff**
