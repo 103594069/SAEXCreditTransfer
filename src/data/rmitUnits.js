@@ -2,7 +2,7 @@
 // `topics` is a small keyword list used for mocked content-overlap scoring —
 // not real syllabus text, just enough to demonstrate the matching logic.
 export const RMIT_UNITS = [
-  // ---- Software Engineering (bp094) ----
+  // ---- Information Technology (bp094) ----
   {
     id: 'ru-cosc2123',
     code: 'COSC2123',
@@ -54,7 +54,7 @@ export const RMIT_UNITS = [
     assessment: 'Exam + lab project',
   },
 
-  // ---- Business / Marketing (bp250) ----
+  // ---- Business (bp250) ----
   {
     id: 'ru-mktg1025',
     code: 'MKTG1025',
@@ -106,91 +106,7 @@ export const RMIT_UNITS = [
     assessment: 'Analytics project',
   },
 
-  // ---- Communication / Media (bp328) ----
-  {
-    id: 'ru-comm1050',
-    code: 'COMM1050',
-    title: 'Media Studies',
-    creditPoints: 12,
-    programId: 'bp328',
-    accreditationType: 'Accredited',
-    topics: ['media theory', 'media history', 'audience analysis', 'media industries'],
-    assessment: 'Essay + exam',
-  },
-  {
-    id: 'ru-comm2245',
-    code: 'COMM2245',
-    title: 'Digital Storytelling',
-    creditPoints: 12,
-    programId: 'bp328',
-    accreditationType: 'Accredited',
-    topics: ['narrative structure', 'digital tools', 'video production', 'storytelling'],
-    assessment: 'Portfolio project',
-  },
-  {
-    id: 'ru-jour1102',
-    code: 'JOUR1102',
-    title: 'Journalism Practice',
-    creditPoints: 12,
-    programId: 'bp328',
-    accreditationType: 'Accredited',
-    topics: ['news writing', 'interviewing', 'ethics', 'reporting'],
-    assessment: 'Portfolio + practical assessment',
-  },
-  {
-    id: 'ru-comm2299',
-    code: 'COMM2299',
-    title: 'Global Media Industries',
-    creditPoints: 12,
-    programId: 'bp328',
-    accreditationType: 'Accredited',
-    topics: ['media globalisation', 'industry structure', 'policy', 'platforms'],
-    assessment: 'Essay + presentation',
-  },
-
-  // ---- Landscape Architecture (bp279) ----
-  {
-    id: 'ru-land2021',
-    code: 'LAND2021',
-    title: 'Landscape Design Studio 2',
-    creditPoints: 24,
-    programId: 'bp279',
-    accreditationType: 'Accredited',
-    topics: ['design studio', 'site planning', 'planting concepts', 'graphic communication'],
-    assessment: 'Studio folio + review',
-  },
-  {
-    id: 'ru-land2044',
-    code: 'LAND2044',
-    title: 'Planting Design',
-    creditPoints: 12,
-    programId: 'bp279',
-    accreditationType: 'Accredited',
-    topics: ['plant selection', 'ecology', 'planting composition', 'maintenance'],
-    assessment: 'Design portfolio',
-  },
-  {
-    id: 'ru-land2077',
-    code: 'LAND2077',
-    title: 'Urban Ecology',
-    creditPoints: 12,
-    programId: 'bp279',
-    accreditationType: 'Accredited',
-    topics: ['urban ecosystems', 'green infrastructure', 'biodiversity', 'climate resilience'],
-    assessment: 'Research report',
-  },
-  {
-    id: 'ru-land1099',
-    code: 'LAND1099',
-    title: 'Site Analysis and Documentation',
-    creditPoints: 12,
-    programId: 'bp279',
-    accreditationType: 'Accredited',
-    topics: ['site survey', 'documentation', 'mapping', 'analysis techniques'],
-    assessment: 'Site documentation folio',
-  },
-
-  // ---- Biotechnology (bp217) ----
+  // ---- Biomedical Science (bp217) ----
   {
     id: 'ru-biol2033',
     code: 'BIOL2033',

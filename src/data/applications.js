@@ -1,4 +1,4 @@
-export const APPLICATIONS_SEED_VERSION = 1
+export const APPLICATIONS_SEED_VERSION = 2
 
 const ALL_DOCS = {
   'learning-agreement': true,
@@ -81,62 +81,6 @@ export function buildSeedApplications() {
           { stage: 'Submitted', date: '2026-07-05', note: 'Shortlist submitted for review.' },
           { stage: 'With Staff', date: '2026-07-06', note: 'Opened for staff review.' },
           { stage: 'With Assessor', date: '2026-07-09', note: 'Forwarded to assessor.' },
-        ]),
-      ],
-    },
-    {
-      id: 'app-ava',
-      studentId: 'stu-ava',
-      institutionId: 'pi-uva',
-      programId: 'bp328',
-      submittedDate: '2026-06-20',
-      documents: ALL_DOCS,
-      courses: [
-        course('pc-uva-globalmedia', 'ru-comm2299', 'Approved', [
-          { stage: 'Submitted', date: '2026-06-20', note: 'Shortlist submitted for review.' },
-          { stage: 'With Staff', date: '2026-06-21', note: 'Opened for staff review.' },
-          { stage: 'With Assessor', date: '2026-06-23', note: 'Forwarded to assessor.' },
-          { stage: 'Approved', date: '2026-06-26', note: 'Approved — strong precedent and content overlap.' },
-        ], { assessorNote: 'Strong precedent and content overlap. Approved.' }),
-        course('pc-uva-storytelling', 'ru-comm2245', 'Approved', [
-          { stage: 'Submitted', date: '2026-06-20', note: 'Shortlist submitted for review.' },
-          { stage: 'With Staff', date: '2026-06-21', note: 'Opened for staff review.' },
-          { stage: 'With Assessor', date: '2026-06-23', note: 'Forwarded to assessor.' },
-          { stage: 'Approved', date: '2026-06-27', note: 'Approved.' },
-        ], { assessorNote: 'Good match, approved.' }),
-        course('pc-uva-theory', 'ru-comm1050', 'Denied', [
-          { stage: 'Submitted', date: '2026-06-20', note: 'Shortlist submitted for review.' },
-          { stage: 'With Staff', date: '2026-06-21', note: 'Opened for staff review.' },
-          { stage: 'With Assessor', date: '2026-06-23', note: 'Forwarded to assessor.' },
-          { stage: 'Denied', date: '2026-06-28', note: 'Denied — content overlap too thin for this unit.' },
-        ], { assessorNote: 'Content overlap too thin (3 of 4 topics, but audience analysis coverage is shallow relative to unit weighting). Recommend student find an alternative.' }),
-        course('pc-uva-journalism', 'ru-jour1102', 'More Info Requested', [
-          { stage: 'Submitted', date: '2026-06-20', note: 'Shortlist submitted for review.' },
-          { stage: 'With Staff', date: '2026-06-21', note: 'Opened for staff review.' },
-          { stage: 'With Assessor', date: '2026-06-24', note: 'Forwarded to assessor.' },
-          { stage: 'More Info Requested', date: '2026-06-29', note: 'More information requested from student.' },
-        ], { assessorNote: 'Please provide the updated 2026 course outline — precedent on file is from 2023 and the unit appears to have been restructured.' }),
-      ],
-    },
-    {
-      id: 'app-noah',
-      studentId: 'stu-noah',
-      institutionId: 'pi-manchester',
-      programId: 'bp279',
-      submittedDate: '2026-07-24',
-      documents: ALL_DOCS,
-      courses: [
-        course('pc-manchester-landscape', 'ru-land2021', 'Submitted', [
-          { stage: 'Submitted', date: '2026-07-24', note: 'Shortlist submitted for review.' },
-        ]),
-        course('pc-manchester-planting', 'ru-land2044', 'Submitted', [
-          { stage: 'Submitted', date: '2026-07-24', note: 'Shortlist submitted for review.' },
-        ]),
-        course('pc-manchester-sitedocs', 'ru-land1099', 'Submitted', [
-          { stage: 'Submitted', date: '2026-07-24', note: 'Shortlist submitted for review.' },
-        ]),
-        course('pc-manchester-sustainability-la', 'ru-gen1002', 'Submitted', [
-          { stage: 'Submitted', date: '2026-07-24', note: 'Shortlist submitted for review.' },
         ]),
       ],
     },

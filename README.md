@@ -26,20 +26,32 @@ taken in one view (e.g. an assessor approving a course) are reflected live
 in the others (e.g. the student's status tracker, the shared status board).
 
 **Student**
-1. *Sign in* — mock login: pick a demo student. Their degree and remaining
-   units auto-populate a profile panel — nothing is entered manually.
-2. *Find Institutions* — partner institutions ranked using historical
+1. *Sign in* — mock login: pick a demo student.
+2. *Profile* — the landing page after login. Auto-populated identity,
+   academic standing (GPA, credit points completed/remaining), and RMIT's
+   real outbound exchange eligibility rules evaluated individually — GPA
+   ≥2.0/4.0, ≥72cp completed *by departure* (early application is allowed if
+   projected to clear it in time), and ≥12cp remaining after a standard
+   exchange semester to retain OS-HELP loan eligibility — combined into an
+   overall **Eligible / On Track / Needs Review** status that gates the
+   "Start Exchange Journey" button (active, active-but-preliminary, or
+   disabled with the specific blockers listed). Also lists every remaining
+   course in the student's actual 24-course degree structure.
+3. *Find Institutions* — partner institutions ranked using historical
    precedent from students in the same degree and how well each institution's
    course package covers the student's remaining units.
-3. Institution detail — a full semester load (always 4 courses, never a
+4. Institution detail — a full semester load (always 4 courses, never a
    single course), each mapped to its RMIT unit with two independent scores:
    a directional **precedent score** (Likely / Possible / Uncommon, from
    historical outcomes) and a **content overlap score** (simple topic-keyword
    match against the RMIT unit) — shown side by side with a "why" note each,
    never blended into one number.
-4. *My Shortlist* — review the load and submit; blocked until a document
-   checklist is fully checked.
-5. *My Application* — a live, per-course stage tracker.
+5. *My Shortlist* — review the load and submit; blocked until a document
+   checklist is fully checked. Students in "On Track" (preliminary) status
+   see a persistent banner reminding them the application is exploratory
+   until they cross the 72cp threshold.
+6. *My Application* — a live, per-course stage tracker. The Profile page
+   links straight here once an application exists, instead of restarting it.
 
 **Staff**
 - *Review Queue* — submitted courses, opened and reviewed one at a time

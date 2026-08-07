@@ -1,6 +1,7 @@
 import { useAppData } from '../context/AppDataContext.jsx'
 
 const STUDENT_NAV = [
+  { id: 'profile', label: 'Profile' },
   { id: 'recommendations', label: 'Find Institutions' },
   { id: 'submit', label: 'My Shortlist' },
   { id: 'status', label: 'My Application' },

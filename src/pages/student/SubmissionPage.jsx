@@ -10,10 +10,19 @@ import Card from '../../components/ui/Card.jsx'
 import Button from '../../components/ui/Button.jsx'
 import PrecedentBadge from '../../components/PrecedentBadge.jsx'
 import OverlapBadge from '../../components/OverlapBadge.jsx'
+import PreliminaryBanner from '../../components/PreliminaryBanner.jsx'
 
 export default function SubmissionPage({ onNavigate }) {
-  const { shortlistDraft, toggleDocument, clearShortlist, submitShortlist, currentStudentApplication, precedents } =
-    useAppData()
+  const {
+    shortlistDraft,
+    toggleDocument,
+    clearShortlist,
+    submitShortlist,
+    currentStudentApplication,
+    precedents,
+    currentStudentEligibility,
+  } = useAppData()
+  const showPreliminaryBanner = currentStudentEligibility?.overallStatus === 'On Track'
 
   const load = shortlistDraft.loadId ? loadById(shortlistDraft.loadId) : null
   const institution = load ? institutionById(load.institutionId) : null
@@ -26,6 +35,7 @@ export default function SubmissionPage({ onNavigate }) {
     const appInstitution = institutionById(currentStudentApplication.institutionId)
     return (
       <div className="flex flex-col gap-6">
+        {showPreliminaryBanner && <PreliminaryBanner />}
         <div>
           <h1 className="text-2xl font-semibold text-paper-900">My shortlist</h1>
           <p className="mt-1 text-sm text-paper-500">Your shortlist has been submitted and is now locked.</p>
@@ -44,6 +54,7 @@ export default function SubmissionPage({ onNavigate }) {
   if (!load || !institution) {
     return (
       <div className="flex flex-col gap-6">
+        {showPreliminaryBanner && <PreliminaryBanner />}
         <div>
           <h1 className="text-2xl font-semibold text-paper-900">My shortlist</h1>
           <p className="mt-1 text-sm text-paper-500">
@@ -62,6 +73,7 @@ export default function SubmissionPage({ onNavigate }) {
 
   return (
     <div className="flex flex-col gap-6">
+      {showPreliminaryBanner && <PreliminaryBanner />}
       <div>
         <h1 className="text-2xl font-semibold text-paper-900">Review and submit your shortlist</h1>
         <p className="mt-1 text-sm text-paper-500">

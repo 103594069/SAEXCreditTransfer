@@ -1,9 +1,7 @@
 export const PROGRAMS = [
-  { id: 'bp250', name: 'Bachelor of Business (Marketing)' },
-  { id: 'bp094', name: 'Bachelor of Engineering (Software Engineering)' },
-  { id: 'bp328', name: 'Bachelor of Communication (Media)' },
-  { id: 'bp279', name: 'Bachelor of Design (Landscape Architecture)' },
-  { id: 'bp217', name: 'Bachelor of Science (Biotechnology)' },
+  { id: 'bp250', name: 'Bachelor of Business' },
+  { id: 'bp094', name: 'Bachelor of Information Technology' },
+  { id: 'bp217', name: 'Bachelor of Biomedical Science' },
 ]
 
 export function programName(id) {

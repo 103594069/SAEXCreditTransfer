@@ -5,6 +5,7 @@ import { buildSeedApplications, APPLICATIONS_SEED_VERSION } from '../data/applic
 import { studentById } from '../data/students.js'
 import { loadById } from '../data/semesterLoads.js'
 import { partnerCourseById } from '../data/partnerCourses.js'
+import { computeEligibility } from '../lib/eligibility.js'
 
 const AppDataContext = createContext(null)
 
@@ -51,6 +52,11 @@ export function AppDataProvider({ children }) {
   const currentStudent = useMemo(
     () => (loggedInStudentId ? studentById(loggedInStudentId) : null),
     [loggedInStudentId],
+  )
+
+  const currentStudentEligibility = useMemo(
+    () => (currentStudent ? computeEligibility(currentStudent) : null),
+    [currentStudent],
   )
 
   const shortlistDraft = shortlistDrafts[loggedInStudentId] ?? EMPTY_DRAFT
@@ -180,6 +186,7 @@ export function AppDataProvider({ children }) {
     setRole,
     loggedInStudentId,
     currentStudent,
+    currentStudentEligibility,
     login,
     logout,
     precedents,

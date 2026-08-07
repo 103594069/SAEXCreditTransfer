@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AppDataProvider, useAppData } from './context/AppDataContext.jsx'
 import Header from './components/Header.jsx'
 import LoginPage from './pages/student/LoginPage.jsx'
+import ProfilePage from './pages/student/ProfilePage.jsx'
 import RecommendationsPage from './pages/student/RecommendationsPage.jsx'
 import InstitutionDetailPage from './pages/student/InstitutionDetailPage.jsx'
 import SubmissionPage from './pages/student/SubmissionPage.jsx'
@@ -14,11 +15,19 @@ import StatusBoardPage from './pages/shared/StatusBoardPage.jsx'
 
 function AppShell() {
   const { role, currentStudent } = useAppData()
-  const [studentPage, setStudentPage] = useState('recommendations')
+  const [studentPage, setStudentPage] = useState('profile')
   const [staffPage, setStaffPage] = useState('queue')
   const [assessorPage, setAssessorPage] = useState('queue')
   const [selectedLoadId, setSelectedLoadId] = useState(null)
   const [selectedCourse, setSelectedCourse] = useState(null) // { applicationId, courseId }
+
+  // Every fresh login (or switch to a different demo student) should land
+  // on the profile page, not wherever the previous student's session left
+  // off.
+  useEffect(() => {
+    if (currentStudent) setStudentPage('profile')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentStudent?.id])
 
   function viewInstitution(loadId) {
     setSelectedLoadId(loadId)
@@ -68,6 +77,7 @@ function AppShell() {
       <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-8">
         {showLogin && <LoginPage />}
 
+        {!showLogin && role === 'student' && studentPage === 'profile' && <ProfilePage onNavigate={navigate} />}
         {!showLogin && role === 'student' && studentPage === 'recommendations' && (
           <RecommendationsPage onViewInstitution={viewInstitution} />
         )}

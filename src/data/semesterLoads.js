@@ -33,35 +33,6 @@ export const SEMESTER_LOADS = [
     partnerCourseIds: ['pc-uam-fundmarketing', 'pc-uam-analytics', 'pc-uam-negocios', 'pc-uam-global'],
   },
   {
-    id: 'load-uva-bp328',
-    institutionId: 'pi-uva',
-    programId: 'bp328',
-    partnerCourseIds: ['pc-uva-globalmedia', 'pc-uva-storytelling', 'pc-uva-theory', 'pc-uva-journalism'],
-  },
-  {
-    id: 'load-tcd-bp328',
-    institutionId: 'pi-tcd',
-    programId: 'bp328',
-    partnerCourseIds: ['pc-tcd-digitalmedia', 'pc-tcd-journalism', 'pc-tcd-mediasociety', 'pc-tcd-environment'],
-  },
-  {
-    id: 'load-manchester-bp279',
-    institutionId: 'pi-manchester',
-    programId: 'bp279',
-    partnerCourseIds: [
-      'pc-manchester-landscape',
-      'pc-manchester-planting',
-      'pc-manchester-sitedocs',
-      'pc-manchester-sustainability-la',
-    ],
-  },
-  {
-    id: 'load-kth-bp279',
-    institutionId: 'pi-kth',
-    programId: 'bp279',
-    partnerCourseIds: ['pc-kth-urbanstudio', 'pc-kth-urbanecology', 'pc-kth-siteanalysis', 'pc-kth-globalsustain'],
-  },
-  {
     id: 'load-nus-bp217',
     institutionId: 'pi-nus',
     programId: 'bp217',

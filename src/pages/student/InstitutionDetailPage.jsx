@@ -4,13 +4,16 @@ import { loadById } from '../../data/semesterLoads.js'
 import { institutionById } from '../../data/partnerInstitutions.js'
 import { partnerCourseById } from '../../data/partnerCourses.js'
 import { scoreCourse } from '../../lib/courseScoring.js'
+import { remainingUnitIds } from '../../data/students.js'
 import Card from '../../components/ui/Card.jsx'
 import Button from '../../components/ui/Button.jsx'
 import Badge from '../../components/ui/Badge.jsx'
 import CourseScorePanel from '../../components/CourseScorePanel.jsx'
+import PreliminaryBanner from '../../components/PreliminaryBanner.jsx'
 
 export default function InstitutionDetailPage({ loadId, onBack, onNavigate }) {
-  const { currentStudent, precedents, shortlistDraft, selectLoad, currentStudentApplication } = useAppData()
+  const { currentStudent, precedents, shortlistDraft, selectLoad, currentStudentApplication, currentStudentEligibility } =
+    useAppData()
 
   const load = loadById(loadId)
   const institution = load ? institutionById(load.institutionId) : null
@@ -33,9 +36,12 @@ export default function InstitutionDetailPage({ loadId, onBack, onNavigate }) {
   const totalCredits = courses.length * 12
   const isShortlisted = shortlistDraft.loadId === load.id
   const locked = Boolean(currentStudentApplication)
+  const remaining = currentStudent ? remainingUnitIds(currentStudent) : []
 
   return (
     <div className="flex flex-col gap-6">
+      {currentStudentEligibility?.overallStatus === 'On Track' && <PreliminaryBanner />}
+
       <button onClick={onBack} className="w-fit text-sm text-brand-700 hover:underline">
         ← Back to recommendations
       </button>
@@ -68,7 +74,7 @@ export default function InstitutionDetailPage({ loadId, onBack, onNavigate }) {
                     {score.rmitUnit.creditPoints}cp)
                   </p>
                 </div>
-                {currentStudent?.remainingUnitIds.includes(course.rmitUnitId) && (
+                {remaining.includes(course.rmitUnitId) && (
                   <Badge tone="brand">Matches a remaining unit</Badge>
                 )}
               </div>

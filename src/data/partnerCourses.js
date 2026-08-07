@@ -3,7 +3,7 @@
 // mocked content-overlap score. `precedentSeed` is expanded into individual
 // historical precedent records by src/data/precedents.js.
 export const PARTNER_COURSES = [
-  // ================= Software Engineering (bp094) =================
+  // ================= Information Technology (bp094) =================
   // -- University of Toronto (established partner, strong precedent) --
   {
     id: 'pc-toronto-ds',
@@ -154,7 +154,7 @@ export const PARTNER_COURSES = [
     precedentSeed: { count: 0, years: [] },
   },
 
-  // ================= Business / Marketing (bp250) =================
+  // ================= Business (bp250) =================
   // -- Copenhagen Business School (strong precedent) --
   {
     id: 'pc-cbs-consumerbeh',
@@ -255,209 +255,7 @@ export const PARTNER_COURSES = [
     precedentSeed: { count: 2, years: [2023, 2024] },
   },
 
-  // ================= Communication / Media (bp328) =================
-  // -- University of Amsterdam (strong precedent) --
-  {
-    id: 'pc-uva-globalmedia',
-    institutionId: 'pi-uva',
-    programId: 'bp328',
-    hostCourseCode: 'COMM3021',
-    hostCourseTitle: 'Global Media Cultures',
-    hostCredits: '6 ECTS',
-    rmitUnitId: 'ru-comm2299',
-    topics: ['media globalisation', 'industry structure', 'policy', 'platforms'],
-    assessment: 'Essay + presentation',
-    precedentSeed: { count: 5, years: [2022, 2023, 2024, 2024, 2025] },
-  },
-  {
-    id: 'pc-uva-storytelling',
-    institutionId: 'pi-uva',
-    programId: 'bp328',
-    hostCourseCode: 'COMM3105',
-    hostCourseTitle: 'Digital Storytelling and Narrative',
-    hostCredits: '6 ECTS',
-    rmitUnitId: 'ru-comm2245',
-    topics: ['narrative structure', 'digital tools', 'storytelling'],
-    assessment: 'Portfolio project',
-    precedentSeed: { count: 4, years: [2022, 2023, 2024, 2025] },
-  },
-  {
-    id: 'pc-uva-theory',
-    institutionId: 'pi-uva',
-    programId: 'bp328',
-    hostCourseCode: 'COMM1010',
-    hostCourseTitle: 'Media Theory and Culture',
-    hostCredits: '6 ECTS',
-    rmitUnitId: 'ru-comm1050',
-    topics: ['media theory', 'audience analysis', 'media industries'],
-    assessment: 'Essay + exam',
-    precedentSeed: { count: 3, years: [2023, 2024, 2025] },
-  },
-  {
-    id: 'pc-uva-journalism',
-    institutionId: 'pi-uva',
-    programId: 'bp328',
-    hostCourseCode: 'JOUR2088',
-    hostCourseTitle: 'Journalism in a Global Context',
-    hostCredits: '6 ECTS',
-    rmitUnitId: 'ru-jour1102',
-    topics: ['news writing', 'ethics', 'reporting'],
-    assessment: 'Portfolio + practical assessment',
-    precedentSeed: { count: 2, years: [2022, 2023] },
-  },
-
-  // -- Trinity College Dublin (weaker precedent) --
-  {
-    id: 'pc-tcd-digitalmedia',
-    institutionId: 'pi-tcd',
-    programId: 'bp328',
-    hostCourseCode: 'JM2011',
-    hostCourseTitle: 'Digital Media Production',
-    hostCredits: '10 ECTS',
-    rmitUnitId: 'ru-comm2245',
-    topics: ['digital tools', 'video production'],
-    assessment: 'Production portfolio',
-    precedentSeed: { count: 1, years: [2021] },
-  },
-  {
-    id: 'pc-tcd-journalism',
-    institutionId: 'pi-tcd',
-    programId: 'bp328',
-    hostCourseCode: 'JM2044',
-    hostCourseTitle: 'Journalism Studies',
-    hostCredits: '10 ECTS',
-    rmitUnitId: 'ru-jour1102',
-    topics: ['news writing', 'interviewing'],
-    assessment: 'Written exam',
-    precedentSeed: { count: 1, years: [2020] },
-  },
-  {
-    id: 'pc-tcd-mediasociety',
-    institutionId: 'pi-tcd',
-    programId: 'bp328',
-    hostCourseCode: 'JM1023',
-    hostCourseTitle: 'Media and Society',
-    hostCredits: '10 ECTS',
-    rmitUnitId: 'ru-comm1050',
-    topics: ['media theory', 'media history'],
-    assessment: 'Essay',
-    precedentSeed: { count: 0, years: [] },
-  },
-  {
-    id: 'pc-tcd-environment',
-    institutionId: 'pi-tcd',
-    programId: 'bp328',
-    hostCourseCode: 'ENV2019',
-    hostCourseTitle: 'Environment and Society',
-    hostCredits: '10 ECTS',
-    rmitUnitId: 'ru-gen1002',
-    topics: ['sustainability', 'social impact'],
-    assessment: 'Group project',
-    precedentSeed: { count: 1, years: [2022] },
-  },
-
-  // ================= Landscape Architecture (bp279) =================
-  // -- University of Manchester (decent precedent) --
-  {
-    id: 'pc-manchester-landscape',
-    institutionId: 'pi-manchester',
-    programId: 'bp279',
-    hostCourseCode: 'ARCH30012',
-    hostCourseTitle: 'Landscape Design Studio',
-    hostCredits: '20 credits',
-    rmitUnitId: 'ru-land2021',
-    topics: ['design studio', 'site planning', 'graphic communication'],
-    assessment: 'Studio folio + review',
-    precedentSeed: { count: 3, years: [2022, 2023, 2024] },
-  },
-  {
-    id: 'pc-manchester-planting',
-    institutionId: 'pi-manchester',
-    programId: 'bp279',
-    hostCourseCode: 'ARCH20044',
-    hostCourseTitle: 'Planting Design and Ecology',
-    hostCredits: '10 credits',
-    rmitUnitId: 'ru-land2044',
-    topics: ['plant selection', 'ecology', 'planting composition'],
-    assessment: 'Design portfolio',
-    precedentSeed: { count: 2, years: [2021, 2023] },
-  },
-  {
-    id: 'pc-manchester-sitedocs',
-    institutionId: 'pi-manchester',
-    programId: 'bp279',
-    hostCourseCode: 'ARCH10018',
-    hostCourseTitle: 'Site Documentation and Analysis',
-    hostCredits: '10 credits',
-    rmitUnitId: 'ru-land1099',
-    topics: ['site survey', 'documentation', 'mapping'],
-    assessment: 'Site documentation folio',
-    precedentSeed: { count: 2, years: [2022, 2024] },
-  },
-  {
-    id: 'pc-manchester-sustainability-la',
-    institutionId: 'pi-manchester',
-    programId: 'bp279',
-    hostCourseCode: 'ENVS20051',
-    hostCourseTitle: 'Sustainable Futures',
-    hostCredits: '10 credits',
-    rmitUnitId: 'ru-gen1002',
-    topics: ['sustainability', 'environmental policy'],
-    assessment: 'Group project',
-    precedentSeed: { count: 1, years: [2023] },
-  },
-
-  // -- KTH Royal Institute of Technology (weaker precedent) --
-  {
-    id: 'pc-kth-urbanstudio',
-    institutionId: 'pi-kth',
-    programId: 'bp279',
-    hostCourseCode: 'AG2412',
-    hostCourseTitle: 'Urban Landscape Studio',
-    hostCredits: '7.5 ECTS',
-    rmitUnitId: 'ru-land2021',
-    topics: ['design studio', 'planting concepts'],
-    assessment: 'Studio review',
-    precedentSeed: { count: 1, years: [2020] },
-  },
-  {
-    id: 'pc-kth-urbanecology',
-    institutionId: 'pi-kth',
-    programId: 'bp279',
-    hostCourseCode: 'AG2413',
-    hostCourseTitle: 'Urban Ecology and Green Infrastructure',
-    hostCredits: '7.5 ECTS',
-    rmitUnitId: 'ru-land2077',
-    topics: ['urban ecosystems', 'green infrastructure', 'biodiversity', 'climate resilience'],
-    assessment: 'Research report',
-    precedentSeed: { count: 2, years: [2022, 2024] },
-  },
-  {
-    id: 'pc-kth-siteanalysis',
-    institutionId: 'pi-kth',
-    programId: 'bp279',
-    hostCourseCode: 'AG2201',
-    hostCourseTitle: 'Landscape Site Analysis',
-    hostCredits: '7.5 ECTS',
-    rmitUnitId: 'ru-land1099',
-    topics: ['site survey', 'analysis techniques'],
-    assessment: 'Site report',
-    precedentSeed: { count: 0, years: [] },
-  },
-  {
-    id: 'pc-kth-globalsustain',
-    institutionId: 'pi-kth',
-    programId: 'bp279',
-    hostCourseCode: 'AG1401',
-    hostCourseTitle: 'Global Sustainability Perspectives',
-    hostCredits: '7.5 ECTS',
-    rmitUnitId: 'ru-gen1001',
-    topics: ['globalisation', 'global issues'],
-    assessment: 'Reflective essay',
-    precedentSeed: { count: 1, years: [2021] },
-  },
-
-  // ================= Biotechnology (bp217) =================
+  // ================= Biomedical Science (bp217) =================
   // -- National University of Singapore (strong precedent) --
   {
     id: 'pc-nus-molcell',

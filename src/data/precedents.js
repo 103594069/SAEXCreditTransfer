@@ -1,6 +1,6 @@
 import { PARTNER_COURSES } from './partnerCourses.js'
 
-export const PRECEDENTS_SEED_VERSION = 1
+export const PRECEDENTS_SEED_VERSION = 2
 
 // Expands each partner course's compact `precedentSeed` into individual
 // historical records — one per past student who was credited. This seed

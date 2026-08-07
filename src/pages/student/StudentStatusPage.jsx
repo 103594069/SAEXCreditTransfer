@@ -6,15 +6,18 @@ import Card from '../../components/ui/Card.jsx'
 import Button from '../../components/ui/Button.jsx'
 import Badge from '../../components/ui/Badge.jsx'
 import CourseStageStepper from '../../components/CourseStageStepper.jsx'
+import PreliminaryBanner from '../../components/PreliminaryBanner.jsx'
 
 const DECISION_TONE = { Approved: 'high', Denied: 'low', 'More Info Requested': 'medium' }
 
 export default function StudentStatusPage({ onNavigate }) {
-  const { currentStudentApplication } = useAppData()
+  const { currentStudentApplication, currentStudentEligibility } = useAppData()
+  const showPreliminaryBanner = currentStudentEligibility?.overallStatus === 'On Track'
 
   if (!currentStudentApplication) {
     return (
       <div className="flex flex-col gap-6">
+        {showPreliminaryBanner && <PreliminaryBanner />}
         <div>
           <h1 className="text-2xl font-semibold text-paper-900">My application</h1>
           <p className="mt-1 text-sm text-paper-500">Track your credit transfer application here once submitted.</p>
@@ -31,6 +34,7 @@ export default function StudentStatusPage({ onNavigate }) {
 
   return (
     <div className="flex flex-col gap-6">
+      {showPreliminaryBanner && <PreliminaryBanner />}
       <div>
         <h1 className="text-2xl font-semibold text-paper-900">My application</h1>
         <p className="mt-1 text-sm text-paper-500">

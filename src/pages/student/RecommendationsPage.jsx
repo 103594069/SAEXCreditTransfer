@@ -2,13 +2,14 @@ import { useMemo } from 'react'
 import { useAppData } from '../../context/AppDataContext.jsx'
 import { rankInstitutions } from '../../lib/recommendations.js'
 import { rmitUnitById } from '../../data/rmitUnits.js'
-import ProfilePanel from '../../components/ProfilePanel.jsx'
+import { remainingUnitIds } from '../../data/students.js'
 import Card from '../../components/ui/Card.jsx'
 import Button from '../../components/ui/Button.jsx'
 import Badge from '../../components/ui/Badge.jsx'
+import PreliminaryBanner from '../../components/PreliminaryBanner.jsx'
 
 export default function RecommendationsPage({ onViewInstitution }) {
-  const { currentStudent, precedents, currentStudentApplication } = useAppData()
+  const { currentStudent, precedents, currentStudentApplication, currentStudentEligibility } = useAppData()
 
   const ranked = useMemo(
     () => (currentStudent ? rankInstitutions(currentStudent, precedents) : []),
@@ -18,10 +19,11 @@ export default function RecommendationsPage({ onViewInstitution }) {
   if (!currentStudent) return null
 
   const locked = Boolean(currentStudentApplication)
+  const remaining = remainingUnitIds(currentStudent)
 
   return (
     <div className="flex flex-col gap-6">
-      <ProfilePanel student={currentStudent} />
+      {currentStudentEligibility?.overallStatus === 'On Track' && <PreliminaryBanner />}
 
       <div>
         <h1 className="text-2xl font-semibold text-paper-900">Recommended partner institutions</h1>
@@ -52,14 +54,14 @@ export default function RecommendationsPage({ onViewInstitution }) {
                 <p className="mt-1.5 text-sm text-paper-600">{reasonNote}</p>
               </div>
               <Badge tone={matchedRemainingUnits.length > 0 ? 'brand' : 'neutral'}>
-                {matchedRemainingUnits.length} of {currentStudent.remainingUnitIds.length} remaining units covered
+                {matchedRemainingUnits.length} of {remaining.length} remaining units covered
               </Badge>
             </div>
 
             <div className="flex flex-wrap gap-2">
               {courses.map((c) => {
                 const unit = rmitUnitById(c.rmitUnitId)
-                const isRemaining = currentStudent.remainingUnitIds.includes(c.rmitUnitId)
+                const isRemaining = remaining.includes(c.rmitUnitId)
                 return (
                   <span
                     key={c.id}
