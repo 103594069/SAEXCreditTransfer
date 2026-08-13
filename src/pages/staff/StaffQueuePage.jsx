@@ -79,13 +79,16 @@ export default function StaffQueuePage({ onOpenCourse }) {
                   {app.courses.map((c) => {
                     const partnerCourse = partnerCourseById(c.partnerCourseId)
                     const unit = rmitUnitById(c.rmitUnitId)
-                    const score = scoreCourse(partnerCourse, precedents)
+                    const score = scoreCourse(partnerCourse, precedents, c.rmitUnitId)
                     return (
                       <li key={c.id} className="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between">
                         <div>
-                          <p className="text-sm text-paper-800">
-                            {partnerCourse.hostCourseTitle} <span className="text-paper-400">→</span> {unit.code}
-                          </p>
+                          <div className="flex items-center gap-2">
+                            <p className="text-sm text-paper-800">
+                              {partnerCourse.hostCourseTitle} <span className="text-paper-400">→</span> {unit.code}
+                            </p>
+                            {c.isSubstituteMapping && <Badge tone="medium">Substitute mapping</Badge>}
+                          </div>
                           {c.staffReviewed && <p className="text-xs text-sage-700">Reviewed</p>}
                         </div>
                         <div className="flex flex-wrap gap-2">

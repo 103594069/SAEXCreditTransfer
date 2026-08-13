@@ -46,7 +46,7 @@ export default function StaffCourseDetailPage({ applicationId, courseId, onBack,
   const institution = institutionById(application.institutionId)
   const partnerCourse = partnerCourseById(course.partnerCourseId)
   const unit = rmitUnitById(course.rmitUnitId)
-  const score = scoreCourse(partnerCourse, precedents)
+  const score = scoreCourse(partnerCourse, precedents, course.rmitUnitId)
   const documentsAttached = REQUIRED_DOCUMENTS.filter((d) => application.documents?.[d.id])
   const reviewedCount = application.courses.filter((c) => c.staffReviewed).length
   const canReview = application.stage === 'With Staff' && !course.staffReviewed
@@ -59,7 +59,10 @@ export default function StaffCourseDetailPage({ applicationId, courseId, onBack,
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-paper-900">{partnerCourse.hostCourseTitle}</h1>
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="text-2xl font-semibold text-paper-900">{partnerCourse.hostCourseTitle}</h1>
+            {course.isSubstituteMapping && <Badge tone="medium">Substitute mapping</Badge>}
+          </div>
           <p className="text-sm text-paper-500">
             {institution?.name} · {partnerCourse.hostCourseCode} · maps to {unit.code} — {unit.title}
           </p>

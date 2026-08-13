@@ -3,11 +3,12 @@ import { useAppData } from '../../context/AppDataContext.jsx'
 import { loadById } from '../../data/semesterLoads.js'
 import { institutionById } from '../../data/partnerInstitutions.js'
 import { partnerCourseById } from '../../data/partnerCourses.js'
-import { rmitUnitById } from '../../data/rmitUnits.js'
 import { scoreCourse } from '../../lib/courseScoring.js'
+import { classifyCourseForStudent } from '../../lib/substituteMapping.js'
 import { REQUIRED_DOCUMENTS } from '../../data/documents.js'
 import Card from '../../components/ui/Card.jsx'
 import Button from '../../components/ui/Button.jsx'
+import Badge from '../../components/ui/Badge.jsx'
 import PrecedentBadge from '../../components/PrecedentBadge.jsx'
 import OverlapBadge from '../../components/OverlapBadge.jsx'
 import PreliminaryBanner from '../../components/PreliminaryBanner.jsx'
@@ -21,6 +22,7 @@ export default function SubmissionPage({ onNavigate }) {
     currentStudentApplication,
     precedents,
     currentStudentEligibility,
+    currentStudent,
   } = useAppData()
   const showPreliminaryBanner = currentStudentEligibility?.overallStatus === 'On Track'
 
@@ -90,15 +92,20 @@ export default function SubmissionPage({ onNavigate }) {
         </div>
         <ul className="flex flex-col divide-y divide-paper-100">
           {courses.map((course) => {
-            const score = scoreCourse(course, precedents)
-            const unit = rmitUnitById(course.rmitUnitId)
+            const classification = classifyCourseForStudent(course, currentStudent)
+            const score = scoreCourse(course, precedents, classification.mappedUnitId)
             return (
               <li key={course.id} className="flex flex-col gap-2 py-3">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <p className="text-sm font-medium text-paper-900">{course.hostCourseTitle}</p>
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-medium text-paper-900">{course.hostCourseTitle}</p>
+                      {classification.state === 'substitute-candidate' && (
+                        <Badge tone="medium">Substitute mapping</Badge>
+                      )}
+                    </div>
                     <p className="text-xs text-paper-500">
-                      maps to {unit.code} — {unit.title} ({unit.creditPoints}cp)
+                      maps to {score.rmitUnit.code} — {score.rmitUnit.title} ({score.rmitUnit.creditPoints}cp)
                     </p>
                   </div>
                 </div>

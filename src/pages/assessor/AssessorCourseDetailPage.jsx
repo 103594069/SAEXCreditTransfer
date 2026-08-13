@@ -47,7 +47,7 @@ export default function AssessorCourseDetailPage({ applicationId, courseId, onBa
   const institution = institutionById(application.institutionId)
   const partnerCourse = partnerCourseById(course.partnerCourseId)
   const unit = rmitUnitById(course.rmitUnitId)
-  const score = scoreCourse(partnerCourse, precedents)
+  const score = scoreCourse(partnerCourse, precedents, course.rmitUnitId)
   const canDecide = application.stage === 'Decision Pending' && !course.decision
   const reviewedCount = application.courses.filter((c) => c.assessorReviewed).length
 
@@ -67,7 +67,10 @@ export default function AssessorCourseDetailPage({ applicationId, courseId, onBa
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-paper-900">{partnerCourse.hostCourseTitle}</h1>
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="text-2xl font-semibold text-paper-900">{partnerCourse.hostCourseTitle}</h1>
+            {course.isSubstituteMapping && <Badge tone="medium">Substitute mapping</Badge>}
+          </div>
           <p className="text-sm text-paper-500">
             {institution?.name} · {partnerCourse.hostCourseCode} · maps to {unit.code} — {unit.title}
           </p>
@@ -115,6 +118,15 @@ export default function AssessorCourseDetailPage({ applicationId, courseId, onBa
                 : 'This is a general elective — lower stakes if the content match is imperfect.'}
             </p>
           </div>
+          {course.isSubstituteMapping && (
+            <div className="flex items-start gap-2 rounded-lg bg-amber-50 p-3 text-sm">
+              <Badge tone="medium">Substitute mapping</Badge>
+              <p className="text-amber-800">
+                Substitute mapping — originally precedented against a different RMIT unit; content overlap checked
+                against this student's actual remaining units instead.
+              </p>
+            </div>
+          )}
           {score.precedent.recencyCaution && (
             <div className="flex items-start gap-2 rounded-lg bg-amber-50 p-3 text-sm">
               <Badge tone="medium">Recency caution</Badge>

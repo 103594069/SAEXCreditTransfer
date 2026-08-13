@@ -24,9 +24,10 @@ export default function FullShortlistPanel({ application, currentCourseId, onOpe
           const content = (
             <div className="flex flex-1 items-center justify-between gap-3">
               <div>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <p className="text-sm font-medium text-paper-900">{partnerCourse.hostCourseTitle}</p>
                   {isCurrent && <Badge tone="brand">You are here</Badge>}
+                  {c.isSubstituteMapping && <Badge tone="medium">Substitute mapping</Badge>}
                 </div>
                 <p className="text-xs text-paper-500">
                   {institutionName} · maps to {unit.code} — {unit.title}

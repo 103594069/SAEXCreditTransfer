@@ -93,15 +93,18 @@ export default function AssessorQueuePage({ onOpenCourse }) {
                   {app.courses.map((c) => {
                     const partnerCourse = partnerCourseById(c.partnerCourseId)
                     const unit = rmitUnitById(c.rmitUnitId)
-                    const score = scoreCourse(partnerCourse, precedents)
+                    const score = scoreCourse(partnerCourse, precedents, c.rmitUnitId)
                     const decisionLabel = c.decision ?? (app.stage === 'Decision Pending' ? 'Awaiting Decision' : null)
                     return (
                       <li key={c.id} className="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between">
                         <div>
-                          <p className="text-sm text-paper-800">
-                            {partnerCourse.hostCourseTitle} <span className="text-paper-400">→</span> {unit.code}
-                          </p>
-                          {decisionLabel && <Badge tone={DECISION_TONE[decisionLabel]}>{decisionLabel}</Badge>}
+                          <div className="flex flex-wrap items-center gap-2">
+                            <p className="text-sm text-paper-800">
+                              {partnerCourse.hostCourseTitle} <span className="text-paper-400">→</span> {unit.code}
+                            </p>
+                            {c.isSubstituteMapping && <Badge tone="medium">Substitute mapping</Badge>}
+                            {decisionLabel && <Badge tone={DECISION_TONE[decisionLabel]}>{decisionLabel}</Badge>}
+                          </div>
                         </div>
                         <div className="flex flex-wrap gap-2">
                           <PrecedentBadge precedent={score.precedent} />

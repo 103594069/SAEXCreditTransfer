@@ -10,6 +10,7 @@ import { studentById } from '../data/students.js'
 import { loadById } from '../data/semesterLoads.js'
 import { partnerCourseById } from '../data/partnerCourses.js'
 import { computeEligibility } from '../lib/eligibility.js'
+import { classifyCourseForStudent } from '../lib/substituteMapping.js'
 
 const AppDataContext = createContext(null)
 
@@ -124,10 +125,13 @@ export function AppDataProvider({ children }) {
       timeline: [{ stage: 'Submitted', date: TODAY, note: 'Shortlist submitted for review.' }],
       courses: load.partnerCourseIds.map((partnerCourseId) => {
         const partnerCourse = partnerCourseById(partnerCourseId)
+        const classification = classifyCourseForStudent(partnerCourse, currentStudent)
         return {
           id: `crs-${partnerCourseId}-${loggedInStudentId}-${Date.now()}`,
           partnerCourseId,
-          rmitUnitId: partnerCourse.rmitUnitId,
+          rmitUnitId: classification.mappedUnitId,
+          originalRmitUnitId: partnerCourse.rmitUnitId,
+          isSubstituteMapping: classification.state === 'substitute-candidate',
           staffReviewed: false,
           assessorReviewed: false,
           decision: null,

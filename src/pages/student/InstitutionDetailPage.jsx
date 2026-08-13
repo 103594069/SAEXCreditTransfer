@@ -4,7 +4,7 @@ import { loadById } from '../../data/semesterLoads.js'
 import { institutionById } from '../../data/partnerInstitutions.js'
 import { partnerCourseById } from '../../data/partnerCourses.js'
 import { scoreCourse } from '../../lib/courseScoring.js'
-import { remainingUnitIds } from '../../data/students.js'
+import { classifyCourseForStudent } from '../../lib/substituteMapping.js'
 import Card from '../../components/ui/Card.jsx'
 import Button from '../../components/ui/Button.jsx'
 import Badge from '../../components/ui/Badge.jsx'
@@ -36,7 +36,6 @@ export default function InstitutionDetailPage({ loadId, onBack, onNavigate }) {
   const totalCredits = courses.length * 12
   const isShortlisted = shortlistDraft.loadId === load.id
   const locked = Boolean(currentStudentApplication)
-  const remaining = currentStudent ? remainingUnitIds(currentStudent) : []
 
   return (
     <div className="flex flex-col gap-6">
@@ -60,7 +59,8 @@ export default function InstitutionDetailPage({ loadId, onBack, onNavigate }) {
 
       <div className="flex flex-col gap-4">
         {courses.map((course) => {
-          const score = scoreCourse(course, precedents)
+          const classification = classifyCourseForStudent(course, currentStudent)
+          const score = scoreCourse(course, precedents, classification.mappedUnitId)
           return (
             <Card key={course.id} className="flex flex-col gap-4 p-5">
               <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
@@ -74,8 +74,12 @@ export default function InstitutionDetailPage({ loadId, onBack, onNavigate }) {
                     {score.rmitUnit.creditPoints}cp)
                   </p>
                 </div>
-                {remaining.includes(course.rmitUnitId) && (
-                  <Badge tone="brand">Matches a remaining unit</Badge>
+                {classification.state === 'direct-match' && <Badge tone="brand">Matches a remaining unit</Badge>}
+                {classification.state === 'substitute-candidate' && (
+                  <Badge tone="medium">
+                    Possible substitute — {classification.overlap.matchedTopics.length}/
+                    {classification.overlap.totalTopics} topics match
+                  </Badge>
                 )}
               </div>
               <CourseScorePanel score={score} />

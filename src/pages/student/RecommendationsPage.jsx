@@ -3,6 +3,7 @@ import { useAppData } from '../../context/AppDataContext.jsx'
 import { rankInstitutions } from '../../lib/recommendations.js'
 import { rmitUnitById } from '../../data/rmitUnits.js'
 import { remainingUnitIds } from '../../data/students.js'
+import { classifyCourseForStudent } from '../../lib/substituteMapping.js'
 import Card from '../../components/ui/Card.jsx'
 import Button from '../../components/ui/Button.jsx'
 import Badge from '../../components/ui/Badge.jsx'
@@ -60,18 +61,31 @@ export default function RecommendationsPage({ onViewInstitution }) {
 
             <div className="flex flex-wrap gap-2">
               {courses.map((c) => {
-                const unit = rmitUnitById(c.rmitUnitId)
-                const isRemaining = remaining.includes(c.rmitUnitId)
+                const classification = classifyCourseForStudent(c, currentStudent)
+                const mappedUnit = rmitUnitById(classification.mappedUnitId)
+
+                if (classification.state === 'substitute-candidate') {
+                  return (
+                    <span
+                      key={c.id}
+                      className="rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs text-amber-700"
+                    >
+                      {c.hostCourseTitle} → possible substitute for {mappedUnit.code} —{' '}
+                      {classification.overlap.matchedTopics.length}/{classification.overlap.totalTopics} topics match
+                    </span>
+                  )
+                }
+
                 return (
                   <span
                     key={c.id}
                     className={`rounded-full border px-2.5 py-1 text-xs ${
-                      isRemaining
+                      classification.state === 'direct-match'
                         ? 'border-brand-200 bg-brand-50 text-brand-700'
                         : 'border-paper-200 bg-paper-50 text-paper-500'
                     }`}
                   >
-                    {c.hostCourseTitle} → {unit.code}
+                    {c.hostCourseTitle} → {mappedUnit.code}
                   </span>
                 )
               })}

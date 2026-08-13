@@ -58,7 +58,10 @@ export default function StudentStatusPage({ onNavigate }) {
               <li key={c.id} className="flex flex-col gap-3 py-4">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="text-sm font-semibold text-paper-900">{partnerCourse.hostCourseTitle}</p>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="text-sm font-semibold text-paper-900">{partnerCourse.hostCourseTitle}</p>
+                      {c.isSubstituteMapping && <Badge tone="medium">Substitute mapping</Badge>}
+                    </div>
                     <p className="text-xs text-paper-500">
                       maps to {unit.code} — {unit.title} ({unit.creditPoints}cp)
                     </p>

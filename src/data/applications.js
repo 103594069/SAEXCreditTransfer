@@ -1,4 +1,4 @@
-export const APPLICATIONS_SEED_VERSION = 4
+export const APPLICATIONS_SEED_VERSION = 5
 
 const ALL_DOCS = {
   'learning-agreement': true,
@@ -14,11 +14,18 @@ const ALL_DOCS = {
 // students both shortlisting Copenhagen Business School) — without it,
 // course ids would collide and duplicate as React keys wherever courses
 // from different applications render in the same list (the status board).
+// `rmitUnitId` is the *effective* mapping (what this course actually
+// counts towards) — normally the same as the partner course's static
+// original mapping, but pass opts.originalRmitUnitId + isSubstituteMapping
+// when a course was credited against a different, still-remaining unit
+// instead (see src/lib/substituteMapping.js).
 function course(appTag, partnerCourseId, rmitUnitId, opts = {}) {
   return {
     id: `crs-${appTag}-${partnerCourseId}`,
     partnerCourseId,
     rmitUnitId,
+    originalRmitUnitId: opts.originalRmitUnitId ?? rmitUnitId,
+    isSubstituteMapping: opts.isSubstituteMapping ?? false,
     staffReviewed: opts.staffReviewed ?? false,
     assessorReviewed: opts.assessorReviewed ?? false,
     decision: opts.decision ?? null,
@@ -80,7 +87,9 @@ export function buildSeedApplications() {
         { stage: 'Decision Pending', date: '2026-07-09', note: 'All courses reviewed by assessor — ready for decisions.' },
       ],
       courses: [
-        course('liam', 'pc-cbs-consumerbeh', 'ru-mktg2031', {
+        course('liam', 'pc-cbs-consumerbeh', 'ru-mktg2115', {
+          originalRmitUnitId: 'ru-mktg2031',
+          isSubstituteMapping: true,
           staffReviewed: true,
           assessorReviewed: true,
           decision: 'Approved',
@@ -134,7 +143,9 @@ export function buildSeedApplications() {
         { stage: 'With Assessor', date: '2026-07-15', note: 'All courses reviewed by staff — forwarded to assessor.' },
       ],
       courses: [
-        course('grace', 'pc-nus-molcell', 'ru-biol2033', {
+        course('grace', 'pc-nus-molcell', 'ru-biol2091', {
+          originalRmitUnitId: 'ru-biol2033',
+          isSubstituteMapping: true,
           staffReviewed: true,
           assessorReviewed: true,
           timeline: [
@@ -235,7 +246,9 @@ export function buildSeedApplications() {
         { stage: 'With Assessor', date: '2026-07-27', note: 'All courses reviewed by staff — forwarded to assessor.' },
       ],
       courses: [
-        course('amelia', 'pc-cbs-consumerbeh', 'ru-mktg2031', {
+        course('amelia', 'pc-cbs-consumerbeh', 'ru-mktg2115', {
+          originalRmitUnitId: 'ru-mktg2031',
+          isSubstituteMapping: true,
           staffReviewed: true,
           staffNote: 'Clean match, strong established precedent — nothing to flag.',
           timeline: [{ event: 'Reviewed by staff', date: '2026-07-26', note: 'Reviewed and forwarded.' }],
