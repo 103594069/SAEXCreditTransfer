@@ -2,17 +2,19 @@ import { useState } from 'react'
 import { useAppData, CURRENT_YEAR } from '../../context/AppDataContext.jsx'
 import { studentById } from '../../data/students.js'
 import { programName } from '../../data/programs.js'
+import { degreeStructureFor } from '../../data/degreeStructures.js'
 import { institutionById } from '../../data/partnerInstitutions.js'
 import { partnerCourseById } from '../../data/partnerCourses.js'
 import { rmitUnitById } from '../../data/rmitUnits.js'
 import { scoreCourse } from '../../lib/courseScoring.js'
+import { STAGE_TONE } from '../../lib/stageTone.js'
 import Card from '../../components/ui/Card.jsx'
 import Button from '../../components/ui/Button.jsx'
 import Badge from '../../components/ui/Badge.jsx'
 import CourseScorePanel from '../../components/CourseScorePanel.jsx'
 import CourseStageStepper from '../../components/CourseStageStepper.jsx'
 
-export default function AssessorCourseDetailPage({ applicationId, courseId, onBack }) {
+export default function AssessorCourseDetailPage({ applicationId, courseId, onBack, onOpenCourse }) {
   const { applications, precedents, decideCourse } = useAppData()
   const [note, setNote] = useState('')
   const [justDecided, setJustDecided] = useState(null)
@@ -33,6 +35,7 @@ export default function AssessorCourseDetailPage({ applicationId, courseId, onBa
   }
 
   const student = studentById(application.studentId)
+  const structure = student ? degreeStructureFor(student.programId) : null
   const institution = institutionById(application.institutionId)
   const partnerCourse = partnerCourseById(course.partnerCourseId)
   const unit = rmitUnitById(course.rmitUnitId)
@@ -61,10 +64,53 @@ export default function AssessorCourseDetailPage({ applicationId, courseId, onBa
           </p>
           <p className="mt-1 text-xs text-paper-500">
             {student?.name} ({student?.studentId}) · {programName(student?.programId)}
+            {structure && ` · Semester ${student.currentSemester} of ${structure.totalSemesters}`}
           </p>
         </div>
         <Badge tone="neutral">{course.stage}</Badge>
       </div>
+
+      <Card className="p-5">
+        <h2 className="mb-1 text-sm font-semibold text-paper-900">Full shortlist</h2>
+        <p className="mb-3 text-xs text-paper-500">
+          All {application.courses.length} courses submitted together in this application — shown for context only.
+          Each is still decided individually.
+        </p>
+        <div className="flex flex-col gap-2.5">
+          {application.courses.map((c) => {
+            const isCurrent = c.id === course.id
+            const cPartnerCourse = partnerCourseById(c.partnerCourseId)
+            const cUnit = rmitUnitById(c.rmitUnitId)
+            const content = (
+              <div className="flex flex-1 items-center justify-between gap-3">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-medium text-paper-900">{cPartnerCourse.hostCourseTitle}</p>
+                    {isCurrent && <Badge tone="brand">You are here</Badge>}
+                  </div>
+                  <p className="text-xs text-paper-500">
+                    {institution?.name} · maps to {cUnit.code} — {cUnit.title}
+                  </p>
+                </div>
+                <Badge tone={STAGE_TONE[c.stage]}>{c.stage}</Badge>
+              </div>
+            )
+            return isCurrent ? (
+              <div key={c.id} className="rounded-lg border-2 border-brand-300 bg-brand-50/50 p-3">
+                {content}
+              </div>
+            ) : (
+              <button
+                key={c.id}
+                onClick={() => onOpenCourse?.(applicationId, c.id)}
+                className="rounded-lg border border-paper-200 bg-white p-3 text-left transition-colors hover:border-brand-200 hover:bg-paper-50"
+              >
+                {content}
+              </button>
+            )
+          })}
+        </div>
+      </Card>
 
       <Card className="p-6">
         <CourseStageStepper course={course} />

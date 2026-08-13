@@ -113,6 +113,7 @@ function AppShell() {
             applicationId={selectedCourse?.applicationId}
             courseId={selectedCourse?.courseId}
             onBack={() => navigate('queue')}
+            onOpenCourse={openAssessorCourse}
           />
         )}
       </main>

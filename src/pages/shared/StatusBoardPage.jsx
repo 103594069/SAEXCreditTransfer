@@ -6,17 +6,9 @@ import { partnerCourseById } from '../../data/partnerCourses.js'
 import { rmitUnitById } from '../../data/rmitUnits.js'
 import Card from '../../components/ui/Card.jsx'
 import Badge from '../../components/ui/Badge.jsx'
+import { STAGE_TONE } from '../../lib/stageTone.js'
 
 const ALL_STAGES = [...COURSE_STAGES, ...DECISION_STAGES]
-
-const STAGE_TONE = {
-  Submitted: 'brand',
-  'With Staff': 'medium',
-  'With Assessor': 'medium',
-  Approved: 'high',
-  Denied: 'low',
-  'More Info Requested': 'low',
-}
 
 export default function StatusBoardPage() {
   const { applications } = useAppData()
