@@ -2,13 +2,12 @@ import { useAppData } from '../../context/AppDataContext.jsx'
 import { institutionById } from '../../data/partnerInstitutions.js'
 import { partnerCourseById } from '../../data/partnerCourses.js'
 import { rmitUnitById } from '../../data/rmitUnits.js'
+import { DECISION_TONE } from '../../lib/stageTone.js'
 import Card from '../../components/ui/Card.jsx'
 import Button from '../../components/ui/Button.jsx'
 import Badge from '../../components/ui/Badge.jsx'
-import CourseStageStepper from '../../components/CourseStageStepper.jsx'
+import ApplicationStageStepper from '../../components/ApplicationStageStepper.jsx'
 import PreliminaryBanner from '../../components/PreliminaryBanner.jsx'
-
-const DECISION_TONE = { Approved: 'high', Denied: 'low', 'More Info Requested': 'medium' }
 
 export default function StudentStatusPage({ onNavigate }) {
   const { currentStudentApplication, currentStudentEligibility } = useAppData()
@@ -30,7 +29,9 @@ export default function StudentStatusPage({ onNavigate }) {
     )
   }
 
-  const institution = institutionById(currentStudentApplication.institutionId)
+  const application = currentStudentApplication
+  const institution = institutionById(application.institutionId)
+  const atDecisionStage = application.stage === 'Decision Pending'
 
   return (
     <div className="flex flex-col gap-6">
@@ -38,43 +39,49 @@ export default function StudentStatusPage({ onNavigate }) {
       <div>
         <h1 className="text-2xl font-semibold text-paper-900">My application</h1>
         <p className="mt-1 text-sm text-paper-500">
-          {institution?.name} · submitted {currentStudentApplication.submittedDate}
+          {institution?.name} · submitted {application.submittedDate}
         </p>
       </div>
 
-      <div className="flex flex-col gap-4">
-        {currentStudentApplication.courses.map((c) => {
-          const partnerCourse = partnerCourseById(c.partnerCourseId)
-          const unit = rmitUnitById(c.rmitUnitId)
-          const isDecided = DECISION_TONE[c.stage]
-          return (
-            <Card key={c.id} className="flex flex-col gap-4 p-5">
-              <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-paper-900">{partnerCourse.hostCourseTitle}</p>
-                  <p className="text-xs text-paper-500">
-                    maps to {unit.code} — {unit.title} ({unit.creditPoints}cp)
-                  </p>
+      <Card className="p-6">
+        <ApplicationStageStepper application={application} />
+      </Card>
+
+      <Card className="p-5">
+        <h2 className="mb-3 text-sm font-semibold text-paper-900">Courses in this application</h2>
+        <ul className="flex flex-col divide-y divide-paper-100">
+          {application.courses.map((c) => {
+            const partnerCourse = partnerCourseById(c.partnerCourseId)
+            const unit = rmitUnitById(c.rmitUnitId)
+            const decisionLabel = atDecisionStage ? (c.decision ?? 'Awaiting Decision') : null
+            return (
+              <li key={c.id} className="flex flex-col gap-3 py-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-semibold text-paper-900">{partnerCourse.hostCourseTitle}</p>
+                    <p className="text-xs text-paper-500">
+                      maps to {unit.code} — {unit.title} ({unit.creditPoints}cp)
+                    </p>
+                  </div>
+                  {decisionLabel && <Badge tone={DECISION_TONE[decisionLabel]}>{decisionLabel}</Badge>}
                 </div>
-                {isDecided && <Badge tone={isDecided}>{c.stage}</Badge>}
-              </div>
-              <CourseStageStepper course={c} />
-              {c.staffNote && (
-                <div className="rounded-lg bg-paper-50 p-3 text-xs text-paper-600">
-                  <span className="font-medium text-paper-700">Staff note: </span>
-                  {c.staffNote}
-                </div>
-              )}
-              {c.assessorNote && (
-                <div className="rounded-lg bg-brand-50 p-3 text-xs text-brand-800">
-                  <span className="font-medium">Assessor note: </span>
-                  {c.assessorNote}
-                </div>
-              )}
-            </Card>
-          )
-        })}
-      </div>
+                {c.staffNote && (
+                  <div className="rounded-lg bg-paper-50 p-3 text-xs text-paper-600">
+                    <span className="font-medium text-paper-700">Staff note: </span>
+                    {c.staffNote}
+                  </div>
+                )}
+                {c.assessorNote && (
+                  <div className="rounded-lg bg-brand-50 p-3 text-xs text-brand-800">
+                    <span className="font-medium">Assessor note: </span>
+                    {c.assessorNote}
+                  </div>
+                )}
+              </li>
+            )
+          })}
+        </ul>
+      </Card>
     </div>
   )
 }

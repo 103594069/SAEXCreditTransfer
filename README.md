@@ -56,28 +56,42 @@ in the others (e.g. the student's status tracker, the shared status board).
    checklist is fully checked. Students in "On Track" (preliminary) status
    see a persistent banner reminding them the application is exploratory
    until they cross the 72cp threshold.
-7. *My Application* — a live, per-course stage tracker. The Profile page
-   links straight here once an application exists, instead of restarting it.
+7. *My Application* — a live tracker for the whole shortlist. The Profile
+   page links straight here once an application exists, instead of
+   restarting it.
+
+**How the pipeline actually moves**
+
+The 4-course shortlist is a single application, and it moves through
+Submitted → With Staff → With Assessor → Decision Pending as one unit — all
+4 courses always share the same stage. Staff and assessors still review each
+course individually (that action is never bundled), but the application
+only advances once every course in it has been reviewed. Only at Decision
+Pending does each course get its own independent outcome — Approved / Denied
+/ More Info Requested — decided one at a time, never as a bundle.
 
 **Staff**
-- *Review Queue* — submitted courses, opened and reviewed one at a time
-  (never bundled), each forwarded individually to an assessor with an
-  optional note.
+- *Review Queue* — one row per application. Opening it shows all 4 courses
+  together; forwarding each one to the assessor is still an individual
+  action, and the application only moves on once all 4 have been forwarded.
 
 **Assessor**
-- *Assessor Queue* — courses forwarded by staff only. Each course shows both
-  scores plus a context-flags panel (accreditation type, and a precedent
-  recency caution when the most recent match is dated) and gets its own
-  Approve / Deny / Request More Info decision — never bundled, never
-  auto-approved.
+- *Assessor Queue* — applications forwarded by staff, plus applications
+  already at Decision Pending with courses still undecided. Each course
+  shows both scores plus a context-flags panel (accreditation type, and a
+  precedent recency caution when the most recent match is dated). Opening a
+  course marks it reviewed; once every course in the application has been
+  opened this way, decisions unlock for all of them — still made one course
+  at a time, never bundled.
 - Approving a course visibly appends to the mock precedent dataset, so the
   precedent score for that course — and future recommendations — reflect it
   immediately.
 
 **Shared**
-- *Status Board* — every course's current stage (Submitted → With Staff →
-  With Assessor → Approved / Denied / More Info Requested), visible from all
-  three roles.
+- *Status Board* — mixes two granularities on purpose: applications still in
+  Submitted / With Staff / With Assessor show as a single card, while
+  applications at Decision Pending break out into one card per course under
+  Approved / Denied / More Info Requested / Awaiting Decision.
 
 ## Resetting demo data
 

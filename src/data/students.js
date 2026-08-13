@@ -111,6 +111,19 @@ export const STUDENTS = [
     gpa: 3.3,
     email: 'isla.fernandez@student.rmit.edu.au',
   },
+
+  // -- Ideal demo case: fully eligible, shortlist exactly matches a
+  // strongly-precedented past combination (Copenhagen Business School) --
+  {
+    id: 'stu-amelia',
+    name: 'Amelia Novak',
+    studentId: 's3799934',
+    programId: 'bp250',
+    currentSemester: 4,
+    completedCourses: 12,
+    gpa: 3.4,
+    email: 'amelia.novak@student.rmit.edu.au',
+  },
 ]
 
 export function studentById(id) {

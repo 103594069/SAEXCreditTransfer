@@ -16,8 +16,12 @@ const AppDataContext = createContext(null)
 export const TODAY = '2026-07-28'
 export const CURRENT_YEAR = 2026
 
-export const COURSE_STAGES = ['Submitted', 'With Staff', 'With Assessor']
-export const DECISION_STAGES = ['Approved', 'Denied', 'More Info Requested']
+// The 4-course shortlist moves through these stages as a single unit — all
+// courses in an application always share the same stage. Only once an
+// application reaches "Decision Pending" do individual courses get their
+// own independent outcome (see DECISION_OUTCOMES).
+export const APPLICATION_STAGES = ['Submitted', 'With Staff', 'With Assessor', 'Decision Pending']
+export const DECISION_OUTCOMES = ['Approved', 'Denied', 'More Info Requested']
 
 function loadPrecedents() {
   const stored = readJSON('precedents', null)
@@ -116,16 +120,20 @@ export function AppDataProvider({ children }) {
       programId: load.programId,
       submittedDate: TODAY,
       documents: draft.documents,
+      stage: 'Submitted',
+      timeline: [{ stage: 'Submitted', date: TODAY, note: 'Shortlist submitted for review.' }],
       courses: load.partnerCourseIds.map((partnerCourseId) => {
         const partnerCourse = partnerCourseById(partnerCourseId)
         return {
           id: `crs-${partnerCourseId}-${loggedInStudentId}-${Date.now()}`,
           partnerCourseId,
           rmitUnitId: partnerCourse.rmitUnitId,
-          stage: 'Submitted',
+          staffReviewed: false,
+          assessorReviewed: false,
+          decision: null,
           staffNote: null,
           assessorNote: null,
-          timeline: [{ stage: 'Submitted', date: TODAY, note: 'Shortlist submitted for review.' }],
+          timeline: [],
         }
       }),
     }
@@ -133,47 +141,112 @@ export function AppDataProvider({ children }) {
     setShortlistDrafts((prev) => ({ ...prev, [loggedInStudentId]: EMPTY_DRAFT }))
   }
 
-  function updateCourse(applicationId, courseId, updater) {
-    setApplications((prev) =>
-      prev.map((app) =>
-        app.id !== applicationId
-          ? app
-          : { ...app, courses: app.courses.map((c) => (c.id === courseId ? updater(c) : c)) },
-      ),
-    )
+  function updateApplication(applicationId, updater) {
+    setApplications((prev) => prev.map((app) => (app.id === applicationId ? updater(app) : app)))
   }
 
-  function openCourseAsStaff(applicationId, courseId) {
-    updateCourse(applicationId, courseId, (c) =>
-      c.stage === 'Submitted'
+  // Opening any course in a freshly-submitted application puts the whole
+  // application "with staff" — this is application-level, not course-level.
+  function openApplicationAsStaff(applicationId) {
+    updateApplication(applicationId, (app) =>
+      app.stage === 'Submitted'
         ? {
-            ...c,
+            ...app,
             stage: 'With Staff',
-            timeline: [...c.timeline, { stage: 'With Staff', date: TODAY, note: 'Opened for staff review.' }],
+            timeline: [...app.timeline, { stage: 'With Staff', date: TODAY, note: 'Opened for staff review.' }],
           }
-        : c,
+        : app,
     )
   }
 
-  function forwardCourseToAssessor(applicationId, courseId, note) {
-    updateCourse(applicationId, courseId, (c) => ({
-      ...c,
-      staffNote: note || c.staffNote,
-      stage: 'With Assessor',
-      timeline: [
-        ...c.timeline,
-        { stage: 'With Assessor', date: TODAY, note: 'Forwarded to assessor with staff notes.' },
-      ],
-    }))
+  // Staff still review and forward each course individually, but the
+  // application only advances to "With Assessor" once every course in it
+  // has been reviewed this way.
+  function markCourseReviewedByStaff(applicationId, courseId, note) {
+    updateApplication(applicationId, (app) => {
+      if (app.stage !== 'With Staff') return app
+      const courses = app.courses.map((c) =>
+        c.id === courseId && !c.staffReviewed
+          ? {
+              ...c,
+              staffReviewed: true,
+              staffNote: note || c.staffNote,
+              timeline: [
+                ...c.timeline,
+                { event: 'Reviewed by staff', date: TODAY, note: note || 'Reviewed and forwarded to assessor.' },
+              ],
+            }
+          : c,
+      )
+      const allReviewed = courses.every((c) => c.staffReviewed)
+      return {
+        ...app,
+        courses,
+        stage: allReviewed ? 'With Assessor' : app.stage,
+        timeline: allReviewed
+          ? [
+              ...app.timeline,
+              { stage: 'With Assessor', date: TODAY, note: 'All courses reviewed by staff — forwarded to assessor.' },
+            ]
+          : app.timeline,
+      }
+    })
   }
 
+  // Mirrors markCourseReviewedByStaff for the assessor side: opening a
+  // course marks it reviewed, and once every course has been opened this
+  // way the application advances to "Decision Pending", unlocking the
+  // per-course decision panel.
+  function openCourseAsAssessor(applicationId, courseId) {
+    updateApplication(applicationId, (app) => {
+      if (app.stage !== 'With Assessor') return app
+      const course = app.courses.find((c) => c.id === courseId)
+      if (!course || course.assessorReviewed) return app
+      const courses = app.courses.map((c) =>
+        c.id === courseId
+          ? {
+              ...c,
+              assessorReviewed: true,
+              timeline: [...c.timeline, { event: 'Reviewed by assessor', date: TODAY, note: 'Opened for assessor review.' }],
+            }
+          : c,
+      )
+      const allReviewed = courses.every((c) => c.assessorReviewed)
+      return {
+        ...app,
+        courses,
+        stage: allReviewed ? 'Decision Pending' : app.stage,
+        timeline: allReviewed
+          ? [
+              ...app.timeline,
+              { stage: 'Decision Pending', date: TODAY, note: 'All courses reviewed by assessor — ready for decisions.' },
+            ]
+          : app.timeline,
+      }
+    })
+  }
+
+  // The only per-course action that was always meant to be independent —
+  // unchanged in spirit, just keyed off `decision` instead of `stage`, and
+  // only meaningful once the application has collectively reached
+  // "Decision Pending".
   function decideCourse(applicationId, courseId, decision, note) {
-    updateCourse(applicationId, courseId, (c) => ({
-      ...c,
-      assessorNote: note || c.assessorNote,
-      stage: decision,
-      timeline: [...c.timeline, { stage: decision, date: TODAY, note: `${decision} by assessor.` }],
-    }))
+    updateApplication(applicationId, (app) => {
+      if (app.stage !== 'Decision Pending') return app
+      return {
+        ...app,
+        courses: app.courses.map((c) =>
+          c.id === courseId
+            ? {
+                ...c,
+                decision,
+                assessorNote: note || c.assessorNote,
+                timeline: [...c.timeline, { event: decision, date: TODAY, note: `${decision} by assessor.` }],
+              }
+            : c,
+        ),
+      }
+    })
 
     if (decision === 'Approved') {
       const application = applications.find((a) => a.id === applicationId)
@@ -211,8 +284,9 @@ export function AppDataProvider({ children }) {
     toggleDocument,
     submitShortlist,
     currentStudentApplication,
-    openCourseAsStaff,
-    forwardCourseToAssessor,
+    openApplicationAsStaff,
+    markCourseReviewedByStaff,
+    openCourseAsAssessor,
     decideCourse,
   }
 

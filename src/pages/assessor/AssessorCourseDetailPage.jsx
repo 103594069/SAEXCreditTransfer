@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useAppData, CURRENT_YEAR } from '../../context/AppDataContext.jsx'
 import { studentById } from '../../data/students.js'
 import { programName } from '../../data/programs.js'
@@ -7,21 +7,29 @@ import { institutionById } from '../../data/partnerInstitutions.js'
 import { partnerCourseById } from '../../data/partnerCourses.js'
 import { rmitUnitById } from '../../data/rmitUnits.js'
 import { scoreCourse } from '../../lib/courseScoring.js'
-import { STAGE_TONE } from '../../lib/stageTone.js'
+import { APPLICATION_STAGE_TONE, DECISION_TONE } from '../../lib/stageTone.js'
 import Card from '../../components/ui/Card.jsx'
 import Button from '../../components/ui/Button.jsx'
 import Badge from '../../components/ui/Badge.jsx'
 import CourseScorePanel from '../../components/CourseScorePanel.jsx'
-import CourseStageStepper from '../../components/CourseStageStepper.jsx'
+import ApplicationStageStepper from '../../components/ApplicationStageStepper.jsx'
+import FullShortlistPanel from '../../components/FullShortlistPanel.jsx'
 
 export default function AssessorCourseDetailPage({ applicationId, courseId, onBack, onOpenCourse }) {
-  const { applications, precedents, decideCourse } = useAppData()
+  const { applications, precedents, openCourseAsAssessor, decideCourse } = useAppData()
   const [note, setNote] = useState('')
   const [justDecided, setJustDecided] = useState(null)
   const [precedentCountAtDecision, setPrecedentCountAtDecision] = useState(null)
 
   const application = applications.find((a) => a.id === applicationId)
   const course = application?.courses.find((c) => c.id === courseId)
+
+  useEffect(() => {
+    if (application?.stage === 'With Assessor' && course && !course.assessorReviewed) {
+      openCourseAsAssessor(applicationId, courseId)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [applicationId, courseId, application?.stage, course?.assessorReviewed])
 
   if (!application || !course) {
     return (
@@ -40,7 +48,8 @@ export default function AssessorCourseDetailPage({ applicationId, courseId, onBa
   const partnerCourse = partnerCourseById(course.partnerCourseId)
   const unit = rmitUnitById(course.rmitUnitId)
   const score = scoreCourse(partnerCourse, precedents)
-  const canDecide = course.stage === 'With Assessor'
+  const canDecide = application.stage === 'Decision Pending' && !course.decision
+  const reviewedCount = application.courses.filter((c) => c.assessorReviewed).length
 
   const precedentPrior = precedents.filter((p) => p.partnerCourseId === course.partnerCourseId).length
 
@@ -67,54 +76,31 @@ export default function AssessorCourseDetailPage({ applicationId, courseId, onBa
             {structure && ` · Semester ${student.currentSemester} of ${structure.totalSemesters}`}
           </p>
         </div>
-        <Badge tone="neutral">{course.stage}</Badge>
+        <Badge tone={APPLICATION_STAGE_TONE[application.stage]}>{application.stage}</Badge>
       </div>
 
-      <Card className="p-5">
-        <h2 className="mb-1 text-sm font-semibold text-paper-900">Full shortlist</h2>
-        <p className="mb-3 text-xs text-paper-500">
-          All {application.courses.length} courses submitted together in this application — shown for context only.
-          Each is still decided individually.
-        </p>
-        <div className="flex flex-col gap-2.5">
-          {application.courses.map((c) => {
-            const isCurrent = c.id === course.id
-            const cPartnerCourse = partnerCourseById(c.partnerCourseId)
-            const cUnit = rmitUnitById(c.rmitUnitId)
-            const content = (
-              <div className="flex flex-1 items-center justify-between gap-3">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium text-paper-900">{cPartnerCourse.hostCourseTitle}</p>
-                    {isCurrent && <Badge tone="brand">You are here</Badge>}
-                  </div>
-                  <p className="text-xs text-paper-500">
-                    {institution?.name} · maps to {cUnit.code} — {cUnit.title}
-                  </p>
-                </div>
-                <Badge tone={STAGE_TONE[c.stage]}>{c.stage}</Badge>
-              </div>
-            )
-            return isCurrent ? (
-              <div key={c.id} className="rounded-lg border-2 border-brand-300 bg-brand-50/50 p-3">
-                {content}
-              </div>
-            ) : (
-              <button
-                key={c.id}
-                onClick={() => onOpenCourse?.(applicationId, c.id)}
-                className="rounded-lg border border-paper-200 bg-white p-3 text-left transition-colors hover:border-brand-200 hover:bg-paper-50"
-              >
-                {content}
-              </button>
-            )
-          })}
-        </div>
-      </Card>
+      <FullShortlistPanel
+        application={application}
+        currentCourseId={course.id}
+        onOpenCourse={onOpenCourse}
+        institutionName={institution?.name}
+        renderStatus={(c) => {
+          if (application.stage !== 'Decision Pending') return null
+          const label = c.decision ?? 'Awaiting Decision'
+          return <Badge tone={DECISION_TONE[label]}>{label}</Badge>
+        }}
+      />
 
       <Card className="p-6">
-        <CourseStageStepper course={course} />
+        <ApplicationStageStepper application={application} />
       </Card>
+
+      {application.stage === 'With Assessor' && (
+        <Card className="border-brand-100 bg-brand-50 px-4 py-3 text-sm text-brand-800">
+          {reviewedCount} of {application.courses.length} courses in this application have been reviewed so far.
+          Decisions unlock once every course has been reviewed.
+        </Card>
+      )}
 
       <Card className="p-5">
         <h2 className="mb-3 text-sm font-semibold text-paper-900">Context flags</h2>

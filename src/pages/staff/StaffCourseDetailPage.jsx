@@ -2,30 +2,33 @@ import { useEffect, useState } from 'react'
 import { useAppData } from '../../context/AppDataContext.jsx'
 import { studentById } from '../../data/students.js'
 import { programName } from '../../data/programs.js'
+import { degreeStructureFor } from '../../data/degreeStructures.js'
 import { institutionById } from '../../data/partnerInstitutions.js'
 import { partnerCourseById } from '../../data/partnerCourses.js'
 import { rmitUnitById } from '../../data/rmitUnits.js'
 import { REQUIRED_DOCUMENTS } from '../../data/documents.js'
 import { scoreCourse } from '../../lib/courseScoring.js'
+import { APPLICATION_STAGE_TONE } from '../../lib/stageTone.js'
 import Card from '../../components/ui/Card.jsx'
 import Button from '../../components/ui/Button.jsx'
 import Badge from '../../components/ui/Badge.jsx'
 import CourseScorePanel from '../../components/CourseScorePanel.jsx'
-import CourseStageStepper from '../../components/CourseStageStepper.jsx'
+import ApplicationStageStepper from '../../components/ApplicationStageStepper.jsx'
+import FullShortlistPanel from '../../components/FullShortlistPanel.jsx'
 
-export default function StaffCourseDetailPage({ applicationId, courseId, onBack }) {
-  const { applications, precedents, openCourseAsStaff, forwardCourseToAssessor } = useAppData()
+export default function StaffCourseDetailPage({ applicationId, courseId, onBack, onOpenCourse }) {
+  const { applications, precedents, openApplicationAsStaff, markCourseReviewedByStaff } = useAppData()
   const [note, setNote] = useState('')
 
   const application = applications.find((a) => a.id === applicationId)
   const course = application?.courses.find((c) => c.id === courseId)
 
   useEffect(() => {
-    if (course?.stage === 'Submitted') {
-      openCourseAsStaff(applicationId, courseId)
+    if (application?.stage === 'Submitted') {
+      openApplicationAsStaff(applicationId)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [applicationId, courseId, course?.stage])
+  }, [applicationId, application?.stage])
 
   if (!application || !course) {
     return (
@@ -39,12 +42,14 @@ export default function StaffCourseDetailPage({ applicationId, courseId, onBack 
   }
 
   const student = studentById(application.studentId)
+  const structure = student ? degreeStructureFor(student.programId) : null
   const institution = institutionById(application.institutionId)
   const partnerCourse = partnerCourseById(course.partnerCourseId)
   const unit = rmitUnitById(course.rmitUnitId)
   const score = scoreCourse(partnerCourse, precedents)
   const documentsAttached = REQUIRED_DOCUMENTS.filter((d) => application.documents?.[d.id])
-  const canForward = course.stage === 'With Staff' || course.stage === 'Submitted'
+  const reviewedCount = application.courses.filter((c) => c.staffReviewed).length
+  const canReview = application.stage === 'With Staff' && !course.staffReviewed
 
   return (
     <div className="flex flex-col gap-6">
@@ -60,13 +65,28 @@ export default function StaffCourseDetailPage({ applicationId, courseId, onBack 
           </p>
           <p className="mt-1 text-xs text-paper-500">
             {student?.name} ({student?.studentId}) · {programName(student?.programId)}
+            {structure && ` · Semester ${student.currentSemester} of ${structure.totalSemesters}`}
           </p>
         </div>
-        <Badge tone="neutral">{course.stage}</Badge>
+        <Badge tone={APPLICATION_STAGE_TONE[application.stage]}>{application.stage}</Badge>
       </div>
 
+      <FullShortlistPanel
+        application={application}
+        currentCourseId={course.id}
+        onOpenCourse={onOpenCourse}
+        institutionName={institution?.name}
+        renderStatus={(c) =>
+          c.staffReviewed ? (
+            <Badge tone="high">Reviewed</Badge>
+          ) : (
+            <Badge tone="neutral">Not yet reviewed</Badge>
+          )
+        }
+      />
+
       <Card className="p-6">
-        <CourseStageStepper course={course} />
+        <ApplicationStageStepper application={application} />
       </Card>
 
       <Card className="p-5">
@@ -99,23 +119,28 @@ export default function StaffCourseDetailPage({ applicationId, courseId, onBack 
         </Card>
       )}
 
-      {canForward && (
+      {application.stage === 'With Staff' && (
         <Card className="p-5">
           <h2 className="mb-3 text-sm font-semibold text-paper-900">Forward to assessor</h2>
           <p className="mb-3 text-sm text-paper-500">
-            Staff review each course individually — this course must be forwarded on its own before an assessor
-            can act on it.
+            {canReview
+              ? `Staff review each course individually — ${reviewedCount} of ${application.courses.length} courses in this application have been reviewed so far. The application only moves to the assessor once all of them have.`
+              : `You've already reviewed this course. Waiting on ${application.courses.length - reviewedCount} more in this application before it moves to the assessor.`}
           </p>
-          <textarea
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            placeholder="Optional note for the assessor…"
-            rows={3}
-            className="mb-4 w-full rounded-lg border border-paper-300 bg-white px-3 py-2 text-sm text-paper-800 placeholder:text-paper-400 focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-100"
-          />
-          <Button onClick={() => forwardCourseToAssessor(applicationId, courseId, note)}>
-            Forward this course to assessor
-          </Button>
+          {canReview && (
+            <>
+              <textarea
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                placeholder="Optional note for the assessor…"
+                rows={3}
+                className="mb-4 w-full rounded-lg border border-paper-300 bg-white px-3 py-2 text-sm text-paper-800 placeholder:text-paper-400 focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-100"
+              />
+              <Button onClick={() => markCourseReviewedByStaff(applicationId, courseId, note)}>
+                Forward this course to assessor
+              </Button>
+            </>
+          )}
         </Card>
       )}
     </div>
