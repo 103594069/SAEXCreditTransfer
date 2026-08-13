@@ -107,7 +107,7 @@ export default function AssessorQueuePage({ onOpenCourse }) {
                           </div>
                         </div>
                         <div className="flex flex-wrap gap-2">
-                          <PrecedentBadge precedent={score.precedent} />
+                          <PrecedentBadge precedent={score.precedent} factual />
                           <OverlapBadge overlap={score.overlap} />
                         </div>
                       </li>

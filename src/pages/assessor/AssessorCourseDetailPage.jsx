@@ -148,8 +148,19 @@ export default function AssessorCourseDetailPage({ applicationId, courseId, onBa
       </Card>
 
       <Card className="p-5">
-        <h2 className="mb-3 text-sm font-semibold text-paper-900">Match explanation</h2>
-        <CourseScorePanel score={score} />
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+          <h2 className="text-sm font-semibold text-paper-900">Match explanation</h2>
+          <a
+            href="#"
+            onClick={(e) => e.preventDefault()}
+            aria-disabled="true"
+            title="Not yet available in this prototype"
+            className="pointer-events-none inline-flex items-center gap-1 rounded-md border border-paper-300 px-2.5 py-1 text-xs font-medium text-paper-400"
+          >
+            View unit outline (partner university)
+          </a>
+        </div>
+        <CourseScorePanel score={score} factualPrecedent />
         <p className="mt-3 text-xs text-paper-400">
           Precedent dataset currently references this course {precedentPrior} time{precedentPrior === 1 ? '' : 's'}.
         </p>

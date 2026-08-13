@@ -19,39 +19,44 @@ export function degreeStructureFor() {
 // be derived directly from how far through the curriculum they've gotten.
 export const CURRICULA = {
   // ---- Bachelor of Information Technology (bp094) ----
+  // Deliberately ordered so all 5 exchange-matching units (rmitUnitId
+  // below) fall in semesters 5-6 — see the "Student A" demo case in
+  // src/data/students.js, which needs a student who has comfortably
+  // cleared the 72cp threshold while every unit in a specific partner
+  // combination is still remaining (not yet completed).
   bp094: [
     { code: 'INTA1001', title: 'Introduction to Information Technology', creditPoints: 12, semester: 1 },
-    { code: 'COSC1076', title: 'Programming Fundamentals', creditPoints: 12, semester: 1, rmitUnitId: 'ru-cosc1076' },
     { code: 'MATH1170', title: 'Discrete Mathematics for Computing', creditPoints: 12, semester: 1 },
     { code: 'COMM1298', title: 'Professional Communication', creditPoints: 12, semester: 1 },
+    { code: 'COSC1113', title: 'Object-Oriented Programming', creditPoints: 12, semester: 1 },
 
-    { code: 'COSC1113', title: 'Object-Oriented Programming', creditPoints: 12, semester: 2 },
     { code: 'ISYS1055', title: 'Database Concepts', creditPoints: 12, semester: 2 },
     { code: 'COSC1114', title: 'Operating Systems Principles', creditPoints: 12, semester: 2 },
     { code: 'NETW1001', title: 'Introduction to Networking', creditPoints: 12, semester: 2 },
+    { code: 'ISYS2101', title: 'Systems Analysis and Design', creditPoints: 12, semester: 2 },
 
-    { code: 'COSC2123', title: 'Algorithms and Analysis', creditPoints: 12, semester: 3, rmitUnitId: 'ru-cosc2123' },
-    { code: 'ISYS2101', title: 'Systems Analysis and Design', creditPoints: 12, semester: 3 },
     { code: 'COSC2408', title: 'Programming Studio 1', creditPoints: 12, semester: 3 },
     { code: 'COSC2531', title: 'Human-Computer Interaction', creditPoints: 12, semester: 3 },
+    { code: 'ISYS2150', title: 'IT Project Management', creditPoints: 12, semester: 3 },
+    { code: 'SECU2100', title: 'Cybersecurity Fundamentals', creditPoints: 12, semester: 3 },
 
+    { code: 'COSC3009', title: 'Cloud Computing Architectures', creditPoints: 12, semester: 4 },
+    { code: 'COSC3813', title: 'Mobile Application Development', creditPoints: 12, semester: 4 },
+    { code: 'ISYS3300', title: 'IT Governance and Ethics', creditPoints: 12, semester: 4 },
+    { code: 'COSC3600', title: 'Capstone Project 1', creditPoints: 12, semester: 4 },
+
+    { code: 'COSC1076', title: 'Programming Fundamentals', creditPoints: 12, semester: 5, rmitUnitId: 'ru-cosc1076' },
+    { code: 'COSC2123', title: 'Algorithms and Analysis', creditPoints: 12, semester: 5, rmitUnitId: 'ru-cosc2123' },
     {
       code: 'COSC2299',
       title: 'Software Engineering Process and Tools',
       creditPoints: 12,
-      semester: 4,
+      semester: 5,
       rmitUnitId: 'ru-cosc2299',
     },
-    { code: 'COSC2626', title: 'Web Programming', creditPoints: 12, semester: 4, rmitUnitId: 'ru-cosc2626' },
-    { code: 'ISYS2150', title: 'IT Project Management', creditPoints: 12, semester: 4 },
-    { code: 'SECU2100', title: 'Cybersecurity Fundamentals', creditPoints: 12, semester: 4 },
+    { code: 'COSC2626', title: 'Web Programming', creditPoints: 12, semester: 5, rmitUnitId: 'ru-cosc2626' },
 
-    { code: 'COSC3020', title: 'Distributed Systems', creditPoints: 12, semester: 5, rmitUnitId: 'ru-cosc3020' },
-    { code: 'COSC3009', title: 'Cloud Computing Architectures', creditPoints: 12, semester: 5 },
-    { code: 'COSC3813', title: 'Mobile Application Development', creditPoints: 12, semester: 5 },
-    { code: 'ISYS3300', title: 'IT Governance and Ethics', creditPoints: 12, semester: 5 },
-
-    { code: 'COSC3600', title: 'Capstone Project 1', creditPoints: 12, semester: 6 },
+    { code: 'COSC3020', title: 'Distributed Systems', creditPoints: 12, semester: 6, rmitUnitId: 'ru-cosc3020' },
     { code: 'COSC3601', title: 'Capstone Project 2', creditPoints: 12, semester: 6 },
     { code: 'COSC3122', title: 'Artificial Intelligence Fundamentals', creditPoints: 12, semester: 6 },
     { code: 'ISYS3401', title: 'Professional Practice in IT', creditPoints: 12, semester: 6 },

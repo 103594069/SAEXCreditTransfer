@@ -176,7 +176,7 @@ export const PARTNER_COURSES = [
     hostCourseTitle: 'Fundamentals of Marketing',
     hostCredits: '7.5 ECTS',
     rmitUnitId: 'ru-mktg1025',
-    topics: ['marketing mix', 'market research', 'branding', 'consumer segmentation'],
+    topics: ['marketing mix', 'market research', 'branding', 'consumer segmentation', 'data analysis', 'marketing metrics'],
     assessment: 'Written exam',
     precedentSeed: { count: 4, years: [2022, 2023, 2024, 2024] },
   },

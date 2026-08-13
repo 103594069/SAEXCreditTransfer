@@ -8,6 +8,7 @@ import { partnerCourseById } from '../../data/partnerCourses.js'
 import { rmitUnitById } from '../../data/rmitUnits.js'
 import { REQUIRED_DOCUMENTS } from '../../data/documents.js'
 import { scoreCourse } from '../../lib/courseScoring.js'
+import { computePrecedentScore } from '../../lib/precedentScoring.js'
 import { APPLICATION_STAGE_TONE } from '../../lib/stageTone.js'
 import Card from '../../components/ui/Card.jsx'
 import Button from '../../components/ui/Button.jsx'
@@ -79,13 +80,11 @@ export default function StaffCourseDetailPage({ applicationId, courseId, onBack,
         currentCourseId={course.id}
         onOpenCourse={onOpenCourse}
         institutionName={institution?.name}
-        renderStatus={(c) =>
-          c.staffReviewed ? (
-            <Badge tone="high">Reviewed</Badge>
-          ) : (
-            <Badge tone="neutral">Not yet reviewed</Badge>
-          )
-        }
+        renderStatus={(c) => {
+          if (!c.staffReviewed) return <Badge tone="neutral">Not yet reviewed</Badge>
+          const hasPrecedent = computePrecedentScore(c.partnerCourseId, precedents).count > 0
+          return <Badge tone="high">{hasPrecedent ? 'Previously approved' : 'Reviewed — no precedent'}</Badge>
+        }}
       />
 
       <Card className="p-6">

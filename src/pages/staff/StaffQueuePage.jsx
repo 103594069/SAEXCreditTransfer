@@ -89,7 +89,11 @@ export default function StaffQueuePage({ onOpenCourse }) {
                             </p>
                             {c.isSubstituteMapping && <Badge tone="medium">Substitute mapping</Badge>}
                           </div>
-                          {c.staffReviewed && <p className="text-xs text-sage-700">Reviewed</p>}
+                          {c.staffReviewed && (
+                            <p className="text-xs text-sage-700">
+                              {score.precedent.count > 0 ? 'Previously approved' : 'Reviewed — no precedent'}
+                            </p>
+                          )}
                         </div>
                         <div className="flex flex-wrap gap-2">
                           <PrecedentBadge precedent={score.precedent} />
