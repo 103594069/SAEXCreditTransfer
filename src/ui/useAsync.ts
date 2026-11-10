@@ -20,6 +20,11 @@ export function useAsync<T>(load: () => Promise<T>, key: unknown): AsyncState<T>
   return state
 }
 
+/** A readable message for an error, including Supabase's plain-object errors. */
 export function errorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : 'Something went wrong.'
+  if (error instanceof Error) return error.message
+  if (typeof error === 'object' && error !== null && 'message' in error && typeof error.message === 'string') {
+    return error.message
+  }
+  return 'Something went wrong.'
 }

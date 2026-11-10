@@ -38,12 +38,20 @@ function SignedIn({ userId }: { userId: string }) {
     creditApproval.getSession(userId).then(setSession, (e: unknown) => setError(errorMessage(e)))
   }, [userId])
 
+  const [switching, setSwitching] = useState(false)
+
+  // One switch at a time, so replies cannot land out of order. After a failure, reload
+  // the stored session so the screen never shows a role other than the stored one.
   async function switchRole(role: Role) {
     setError(null)
+    setSwitching(true)
     try {
       setSession(await creditApproval.switchActiveRole(userId, role))
     } catch (e) {
       setError(errorMessage(e))
+      await creditApproval.getSession(userId).then(setSession, () => {})
+    } finally {
+      setSwitching(false)
     }
   }
 
@@ -84,6 +92,7 @@ function SignedIn({ userId }: { userId: string }) {
                 <span className="mr-2 text-paper-600">Acting as</span>
                 <select
                   value={session.activeRole}
+                  disabled={switching}
                   onChange={(e) => void switchRole(e.target.value as Role)}
                   className="rounded border border-paper-300 px-2 py-1"
                 >
