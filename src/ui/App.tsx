@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import type { Role } from '../domain/roles.ts'
 import type { UserSession } from '../service/creditApproval.ts'
@@ -39,19 +39,47 @@ function SignedIn({ userId }: { userId: string }) {
   }, [userId])
 
   const [switching, setSwitching] = useState(false)
+  const roleSelect = useRef<HTMLSelectElement>(null)
+  const refocusSwitcher = useRef(false)
 
-  // One switch at a time, so replies cannot land out of order. After a failure, reload
-  // the stored session so the screen never shows a role other than the stored one.
+  // The switcher loses focus while it is disabled; give it back once it is enabled again.
+  useEffect(() => {
+    if (!switching && refocusSwitcher.current) {
+      refocusSwitcher.current = false
+      roleSelect.current?.focus()
+    }
+  }, [switching])
+
+  // One switch at a time, so replies cannot land out of order. After a failure the stored
+  // role may or may not have changed, so the switcher stays locked until the stored session
+  // has been read back (retried when the browser comes back online).
   async function switchRole(role: Role) {
     setError(null)
     setSwitching(true)
     try {
       setSession(await creditApproval.switchActiveRole(userId, role))
     } catch (e) {
-      setError(errorMessage(e))
-      await creditApproval.getSession(userId).then(setSession, () => {})
+      const failure = errorMessage(e)
+      setError(`${failure} Checking your current role…`)
+      const stored = await readBackSession()
+      setError(stored.activeRole === role ? null : failure)
+      setSession(stored)
     } finally {
       setSwitching(false)
+      refocusSwitcher.current = true
+    }
+  }
+
+  async function readBackSession(): Promise<UserSession> {
+    for (;;) {
+      try {
+        return await creditApproval.getSession(userId)
+      } catch {
+        await new Promise<void>((resolve) => {
+          if (navigator.onLine) setTimeout(resolve, 2000)
+          else window.addEventListener('online', () => resolve(), { once: true })
+        })
+      }
     }
   }
 
@@ -91,6 +119,7 @@ function SignedIn({ userId }: { userId: string }) {
               <label className="text-sm">
                 <span className="mr-2 text-paper-600">Acting as</span>
                 <select
+                  ref={roleSelect}
                   value={session.activeRole}
                   disabled={switching}
                   onChange={(e) => void switchRole(e.target.value as Role)}
