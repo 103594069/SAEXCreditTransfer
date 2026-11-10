@@ -5,7 +5,7 @@ import type { UserSession } from '../service/creditApproval.ts'
 import { creditApproval, supabase } from './creditApproval.ts'
 import { AssessorScreen, InstitutionAdminScreen, OperatorScreen, StaffScreen, StudentScreen } from './screens/RoleScreens.tsx'
 import { SignInScreen } from './screens/SignInScreen.tsx'
-import { errorMessage } from './useAsync.ts'
+import { errorMessage, isNetworkFailure } from './useAsync.ts'
 
 /** One screen per role. Only the active role's screen is ever rendered. */
 const ROLE_SCREENS: Record<Role, (props: { userId: string }) => ReactNode> = {
@@ -14,6 +14,10 @@ const ROLE_SCREENS: Record<Role, (props: { userId: string }) => ReactNode> = {
   Assessor: AssessorScreen,
   'Institution Admin': InstitutionAdminScreen,
   Operator: OperatorScreen,
+}
+
+function withHint(message: string, hint: string): string {
+  return `${/[.!?…]$/.test(message) ? message : `${message}.`} ${hint}`
 }
 
 export function App() {
@@ -50,9 +54,17 @@ function SignedIn({ userId }: { userId: string }) {
     }
   }, [switching])
 
+  const mounted = useRef(true)
+  useEffect(() => {
+    mounted.current = true
+    return () => {
+      mounted.current = false
+    }
+  }, [])
+
   // One switch at a time, so replies cannot land out of order. After a failure the stored
   // role may or may not have changed, so the switcher stays locked until the stored session
-  // has been read back (retried when the browser comes back online).
+  // has been read back. Network failures are retried; anything else gives up with a hint.
   async function switchRole(role: Role) {
     setError(null)
     setSwitching(true)
@@ -60,27 +72,34 @@ function SignedIn({ userId }: { userId: string }) {
       setSession(await creditApproval.switchActiveRole(userId, role))
     } catch (e) {
       const failure = errorMessage(e)
-      setError(`${failure} Checking your current role…`)
+      setError(withHint(failure, 'Checking your current role…'))
       const stored = await readBackSession()
-      setError(stored.activeRole === role ? null : failure)
-      setSession(stored)
+      if (!mounted.current) return
+      if (stored) {
+        setError(stored.activeRole === role ? null : failure)
+        setSession(stored)
+      } else {
+        setError(withHint(failure, 'Reload the page to see your current role.'))
+      }
     } finally {
-      setSwitching(false)
       refocusSwitcher.current = true
+      if (mounted.current) setSwitching(false)
     }
   }
 
-  async function readBackSession(): Promise<UserSession> {
-    for (;;) {
-      try {
-        return await creditApproval.getSession(userId)
-      } catch {
-        await new Promise<void>((resolve) => {
-          if (navigator.onLine) setTimeout(resolve, 2000)
-          else window.addEventListener('online', () => resolve(), { once: true })
-        })
+  /** The stored session, retried through network failures; null once retrying cannot help. */
+  async function readBackSession(): Promise<UserSession | null> {
+    while (mounted.current) {
+      if (navigator.onLine) {
+        try {
+          return await creditApproval.getSession(userId)
+        } catch (e) {
+          if (!isNetworkFailure(e)) return null
+        }
       }
+      await new Promise((resolve) => setTimeout(resolve, 2000))
     }
+    return null
   }
 
   const signOut = () => void supabase.auth.signOut()

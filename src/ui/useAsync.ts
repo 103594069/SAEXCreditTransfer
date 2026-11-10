@@ -28,3 +28,8 @@ export function errorMessage(error: unknown): string {
   }
   return 'Something went wrong.'
 }
+
+/** Whether an error means the request never got an answer (offline, connection dropped). */
+export function isNetworkFailure(error: unknown): boolean {
+  return error instanceof TypeError || /failed to fetch|networkerror|load failed/i.test(errorMessage(error))
+}
