@@ -38,7 +38,7 @@ An overseas university with which the Home Institution has an exchange agreement
 _Avoid_: Host university, destination, school
 
 **Partner Course**:
-A course offered by a Partner Institution, mapped to the Home Unit it is expected to be credited as.
+A course offered by a Partner Institution, mapped to the Home Unit it is expected to be credited as. One record per course, shared by every Home Institution using the product.
 _Avoid_: Host course, overseas course, subject
 
 ### Eligibility
@@ -51,16 +51,16 @@ _Avoid_: Eligibility result, readiness
 All exchange rules are met now.
 
 **On Track**:
-No rule is failed, but the credit point threshold is only projected to be met by departure. Applications from On Track students are **Preliminary**.
+No rule is failed, but the credit point threshold is only projected to be met by departure. Study Plans from On Track students are **Preliminary**.
 
 **Needs Review**:
-At least one rule is failed or the credit point threshold is not projected to be met. Blocks starting an application.
+At least one rule is failed or the credit point threshold is not projected to be met. Blocks starting a Study Plan.
 
 **Blocker**:
 A specific reason a student's Eligibility Status is Needs Review.
 
 **Preliminary**:
-The state of an application from an On Track student: exploratory until the student crosses the credit point threshold.
+The state of a Study Plan from an On Track student: exploratory until the student crosses the credit point threshold.
 _Avoid_: Provisional, draft
 
 ### Planning an exchange
@@ -69,9 +69,9 @@ _Avoid_: Provisional, draft
 A set of Partner Courses at one Partner Institution whose converted Home Credit meets the Home Institution's full-semester requirement (48cp at RMIT). Defined by credit total, not course count.
 _Avoid_: Package (informal), course set, "four courses"
 
-**Shortlist**:
-The Semester Load a student has chosen to apply with. Always a whole load, never individual courses.
-_Avoid_: Cart, basket, selection
+**Backup Course**:
+A Partner Course listed in a Study Plan alongside its Semester Load and assessed with it, but not counted towards the semester's Home Credit unless it is swapped in for a course the Partner Institution does not offer.
+_Avoid_: Alternate, reserve, spare
 
 **Direct Match**:
 A Partner Course whose mapped Home Unit is still a Remaining Unit for the student.
@@ -86,7 +86,7 @@ A Partner Course whose mapped Home Unit is already completed and which overlaps 
 ### Evidence
 
 **Precedent**:
-A record of a past student being credited for a specific Partner Course, with the year it happened. Approving a course creates a new one.
+A record of a past student being credited for a specific Partner Course, with the year it happened. Approving a course creates a new one. Belongs to one Home Institution and is never shared with others.
 _Avoid_: History, past approval
 
 **Combination Precedent**:
@@ -107,19 +107,19 @@ _Avoid_: Similarity, match score
 
 ### Approval
 
-**Application**:
-A student's submitted Shortlist, tracked as a single item through the approval stages.
-_Avoid_: Submission, request, case
+**Study Plan**:
+A student's proposed Semester Load plus Backup Courses at one Partner Institution, submitted for approval and tracked as a single item through the approval Stages.
+_Avoid_: Application, Shortlist, Learning Agreement (the Erasmus name), submission, request, case
 
 **Stage**:
-Where an Application is in the pipeline: **Submitted**, **With Staff**, **With Assessor**, or **Decision Pending**. Every course in an Application always shares the same Stage.
-_Avoid_: Status (in domain language; "Status Board" and "My Application" status screens are UI names only)
+Where a Study Plan is in the pipeline: **Submitted**, **With Staff**, **With Assessor**, or **Decision Pending**. Every course in a Study Plan always shares the same Stage.
+_Avoid_: Status (in domain language; "Status Board" and status screens are UI names only)
 
 **Staff Review**:
-Staff checking and forwarding a single course of an Application to the Assessor. The Application advances only once every course in it is forwarded.
+Staff checking and forwarding a single course of a Study Plan to the Assessor. The Study Plan advances only once every course in it is forwarded.
 
 **Assessor Review**:
-An Assessor opening a single course of an Application to examine it. Decisions unlock only once every course has been reviewed.
+An Assessor opening a single course of a Study Plan to examine it. Decisions unlock only once every course has been reviewed.
 
 **Decision**:
 The Outcome an Assessor gives to one course at Decision Pending, made one course at a time and never as a bundle.
@@ -129,15 +129,15 @@ The result of a Decision on a course: **Approved**, **Denied**, or **More Info R
 _Avoid_: Result, verdict
 
 **Document Checklist**:
-The supporting documents a student must confirm before an Application can be submitted.
+The supporting documents a student must confirm before a Study Plan can be submitted.
 
 ### Roles
 
 **Student**:
-The Home Institution student planning an exchange who builds a Shortlist and submits an Application.
+The Home Institution student planning an exchange who builds and submits a Study Plan.
 
 **Staff**:
-Administrative reviewers who do the first pass on an Application and forward courses to the Assessor.
+Administrative reviewers who do the first pass on a Study Plan and forward courses to the Assessor.
 _Avoid_: Admin, coordinator
 
 **Assessor**:
@@ -149,7 +149,7 @@ _Avoid_: Reviewer, approver
 - A **Home Institution** has many **Programs**; a **Program** has many **Home Units**; a **Student** has many **Remaining Units** within their Program
 - A **Partner Institution** offers many **Partner Courses**; each Partner Course maps to one **Home Unit**
 - A **Semester Load** belongs to one **Program** and one **Partner Institution** and contains enough **Partner Courses** to meet the full-semester **Home Credit** requirement after **Credit Conversion**
-- A **Shortlist** is one **Semester Load**; submitting it creates one **Application** containing its courses
-- An **Application** moves through its **Stages** as one unit; each course in it receives its own **Outcome** only at Decision Pending
+- A **Study Plan** holds one **Semester Load** and any number of **Backup Courses**, all at one **Partner Institution**
+- A **Study Plan** moves through its **Stages** as one unit; each course in it receives its own **Outcome** only at Decision Pending
 - An **Assessor** approving a course creates a **Precedent** that changes future **Precedent Scores**
 - A **Combination Precedent** refers to a **Semester Load**; a **Precedent** refers to a **Partner Course**
