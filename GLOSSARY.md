@@ -70,8 +70,7 @@ A Partner Course whose mapped RMIT Unit the student has already completed, but w
 _Avoid_: Alternative, replacement
 
 **Not Applicable**:
-A Partner Course whose mapped RMIT Unit is already completed and which overlaps no Remaining Unit meaningfully.
-_Avoid_: Already completed (used only as the UI label)
+A Partner Course whose mapped RMIT Unit is already completed and which overlaps no Remaining Unit meaningfully. Students see it labelled "Already completed".
 
 ### Evidence
 
@@ -103,7 +102,7 @@ _Avoid_: Submission, request, case
 
 **Stage**:
 Where an Application is in the pipeline: **Submitted**, **With Staff**, **With Assessor**, or **Decision Pending**. Every course in an Application always shares the same Stage.
-_Avoid_: Status (reserved for Eligibility Status and course Outcome)
+_Avoid_: Status (in domain language; "Status Board" and "My Application" status screens are UI names only)
 
 **Staff Review**:
 Staff checking and forwarding a single course of an Application to the Assessor. The Application advances only once all four courses are forwarded.
