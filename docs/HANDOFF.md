@@ -95,3 +95,37 @@ The questionnaire hasn't been answered, so these workflow decisions are **provis
 - Real student data: SSO, data residency, student-records integration.
 
 **Next step:** `/to-spec`, then `/to-tickets`. Order tickets so the workflow-independent parts (eligibility, outlines and catalogue, Home Unit import, AI overlap, Precedents, Study Plan builder, export) come before the Staff and Assessor flow.
+
+## Update: ticket #3 implemented (2026-11-10, paused)
+
+Ticket #3 ("01: Scaffold the fresh build with demo sign-in and role screens", child of spec #2) is implemented on `claude/brave-newton-capewm` and pushed. The issue stays open until the branch is merged (`/ship-pr` closes it). Review decisions are posted as comments on #3.
+
+**What exists now**
+
+- v1 is out of the main tree. A TypeScript React (Vite) app runs on local Supabase; the README lists the commands (`npm install`, `npx supabase start`, `npx supabase db reset`, `npm run dev`) and the demo accounts (password `demo-password`).
+- `src/service/creditApproval.ts` is the Credit Approval service. It checks the active role against `src/domain/permissions.ts` on every command, lets a user switch only to a role they hold, and falls back to a held role if the active one was removed. It has ports for Storage, Outline Comparison and Notifier (`src/service/ports.ts`). Tests use the in-memory and fake adapters (36 tests); the app uses the Supabase adapters in `src/adapters/supabase`. Lint stops `src/domain` and `src/service` importing Supabase or adapters.
+- `supabase/migrations/20261110000000_accounts_and_roles.sql` holds accounts, roles, Home Institutions and the Demo Outbox, with RLS. Browsers have no access to the outbox. `supabase/seed.sql` seeds RMIT (demo) and six demo accounts. Sign-up is disabled.
+- CI (`.github/workflows/ci.yml`) runs lint, typecheck and tests on every push. It passed on the first push.
+
+**Status of the implement flow**
+
+- QA passed in the running app, apart from the blocked tag push below. Code review verdict: Ready (no P0/P1). All findings are fixed or decided; see the comments on #3.
+- The last fix, `4941cd8` (60-second read-back window), was checked only by this session in the browser: a 30 s run of 502s recovers, and a permanent error gives up at 60 s. It still needs its independent follow-up QA and review pass. Run that first on resuming, with fixed point `35bbf17`.
+
+**Waiting on you**
+
+- Push the v1 tag. This session's git proxy refuses tag pushes:
+  ```bash
+  git push origin prototype/v1
+  ```
+- Then open a PR for `claude/brave-newton-capewm` and merge it (`/ship-pr`).
+
+**Constraints recorded for later tickets**
+
+- Notification ticket: `send-notification` must send only to the account's own verified email, looked up on the server, and build the subject and body from stored data. It must never write an email the caller supplies.
+- Seam 2 ticket: add automated tests for the Supabase Storage adapter and the role-switch RLS policy, which are covered only by QA today.
+- The service runs in the browser, so RLS is the boundary that is actually enforced. Policies in later tickets must not rely on the active role alone.
+
+**Local environment notes (cloud session)**
+
+- Docker must be started (`dockerd`), and `public.ecr.aws` is blocked, so start Supabase with `SUPABASE_INTERNAL_IMAGE_REGISTRY=docker.io npx supabase start`.
