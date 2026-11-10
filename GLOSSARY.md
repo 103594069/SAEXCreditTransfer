@@ -26,6 +26,10 @@ _Avoid_: Outstanding unit, required unit
 The Home Institution's own measure of academic load (credit points at RMIT); eligibility rules, degree progress and Semester Load totals are expressed in it.
 _Avoid_: Credits, points
 
+**Elective Credit**:
+Credit towards a Program's elective allowance rather than a specific Home Unit.
+_Avoid_: Free elective, general credit
+
 **Partner Credit**:
 A Partner Institution's own measure of a Partner Course's load (e.g. ECTS).
 
@@ -38,7 +42,7 @@ An overseas university with which the Home Institution has an exchange agreement
 _Avoid_: Host university, destination, school
 
 **Partner Course**:
-A course offered by a Partner Institution, mapped to the Home Unit it is expected to be credited as. One record per course, shared by every Home Institution using the product.
+A course offered by a Partner Institution: its outline, topics and Partner Credit. One record per course, shared by every Home Institution using the product; it carries no link to any Home Unit.
 _Avoid_: Host course, overseas course, subject
 
 ### Eligibility
@@ -73,20 +77,24 @@ _Avoid_: Package (informal), course set, "four courses"
 A Partner Course listed in a Study Plan alongside its Semester Load and assessed with it, but not counted towards the semester's Home Credit unless it is swapped in for a course the Partner Institution does not offer.
 _Avoid_: Alternate, reserve, spare
 
+**Course Mapping**:
+A pairing of one Partner Course with either one Home Unit or Elective Credit, belonging to one Home Institution. A Study Plan proposes Course Mappings; an approved one becomes a Precedent.
+_Avoid_: Equivalence, match, mapping (unqualified)
+
 **Direct Match**:
-A Partner Course whose mapped Home Unit is still a Remaining Unit for the student.
+A Course Mapping whose Home Unit is still a Remaining Unit for the student.
 
 **Substitute Candidate**:
-A Partner Course whose mapped Home Unit the student has already completed, but whose content overlaps strongly or moderately with a different Remaining Unit.
+A Partner Course whose usual Course Mapping targets a Home Unit the student has already completed, but whose content overlaps strongly or moderately with a different Remaining Unit.
 _Avoid_: Alternative, replacement
 
 **Not Applicable**:
-A Partner Course whose mapped Home Unit is already completed and which overlaps no Remaining Unit meaningfully. Students see it labelled "Already completed".
+A Partner Course whose usual Course Mapping targets a Home Unit already completed and which overlaps no Remaining Unit meaningfully. Students see it labelled "Already completed".
 
 ### Evidence
 
 **Precedent**:
-A record of a past student being credited for a specific Partner Course, with the year it happened. Approving a course creates a new one. Belongs to one Home Institution and is never shared with others.
+An approved Course Mapping from a past Study Plan, with the year it was approved. Belongs to one Home Institution and is never shared with others.
 _Avoid_: History, past approval
 
 **Combination Precedent**:
@@ -102,7 +110,7 @@ A flag shown to Assessors when a course has Precedents but the most recent one i
 _Avoid_: Stale warning
 
 **Content Overlap Score**:
-A **Strong**, **Moderate**, or **Weak** rating of how closely a Partner Course's topics match a Home Unit. Independent of, and never blended with, the Precedent Score.
+A **Strong**, **Moderate**, or **Weak** rating of how closely a Partner Course's topics match the Home Unit in a Course Mapping. Independent of, and never blended with, the Precedent Score.
 _Avoid_: Similarity, match score
 
 ### Approval
@@ -147,9 +155,10 @@ _Avoid_: Reviewer, approver
 ## Relationships
 
 - A **Home Institution** has many **Programs**; a **Program** has many **Home Units**; a **Student** has many **Remaining Units** within their Program
-- A **Partner Institution** offers many **Partner Courses**; each Partner Course maps to one **Home Unit**
+- A **Partner Institution** offers many **Partner Courses**, shared across all **Home Institutions**
+- A **Home Institution** owns its **Course Mappings**; each pairs one **Partner Course** with one **Home Unit** or **Elective Credit**
 - A **Semester Load** belongs to one **Program** and one **Partner Institution** and contains enough **Partner Courses** to meet the full-semester **Home Credit** requirement after **Credit Conversion**
 - A **Study Plan** holds one **Semester Load** and any number of **Backup Courses**, all at one **Partner Institution**
 - A **Study Plan** moves through its **Stages** as one unit; each course in it receives its own **Outcome** only at Decision Pending
-- An **Assessor** approving a course creates a **Precedent** that changes future **Precedent Scores**
-- A **Combination Precedent** refers to a **Semester Load**; a **Precedent** refers to a **Partner Course**
+- An **Assessor** approving a course turns its **Course Mapping** into a **Precedent**, which changes future **Precedent Scores**
+- A **Combination Precedent** refers to a **Semester Load**; a **Precedent** refers to a **Course Mapping**
