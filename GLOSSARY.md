@@ -101,16 +101,36 @@ _Avoid_: History, past approval
 A record of a complete Semester Load having been approved together as a unit, with the year.
 _Avoid_: Past package, bundle precedent
 
+**Review By Date**:
+The date after which a Precedent should no longer be relied on without re-checking. Set by the Assessor on approval; defaults to three years.
+_Avoid_: Expiry date, valid-until
+
+**Lapsed Precedent**:
+A Precedent past its Review By Date. Still visible as evidence, but weighted less in the Precedent Score.
+_Avoid_: Expired precedent, stale precedent
+
+**Outline Snapshot**:
+The copy of a Partner Course outline that a Precedent was approved against, kept with the Precedent.
+_Avoid_: Outline version, archived outline
+
 **Precedent Score**:
-A directional tier of **Likely**, **Possible**, or **Uncommon** derived from how many Precedents exist and how recent the latest is. Not a probability.
+A directional tier of **Likely**, **Possible**, or **Uncommon** derived from how many Precedents exist, how many are Lapsed, and how recent the latest is. Not a probability.
 _Avoid_: Approval likelihood, confidence
 
 **Recency Caution**:
-A flag shown to Assessors when a course has Precedents but the most recent one is dated.
+A flag shown to Assessors when a Course Mapping's Precedents are all Lapsed.
 _Avoid_: Stale warning
 
+**Content Change Hint**:
+A flag shown when the current Content Overlap Score is well below what a Course Mapping's Precedents suggest, signalling the Partner Course may have changed since approval.
+_Avoid_: Drift warning
+
 **Content Overlap Score**:
-A **Strong**, **Moderate**, or **Weak** rating of how closely a Partner Course's topics match the Home Unit in a Course Mapping. Independent of, and never blended with, the Precedent Score.
+A **Strong**, **Moderate**, or **Weak** rating, with a written explanation, of how closely a Partner Course's outline matches the Home Unit's outline in a Course Mapping. Produced by AI comparison. Independent of, and never blended with, the Precedent Score.
+
+**AI Assistance Level**:
+A Home Institution setting for how far AI goes in assessment: **Explain** (Content Overlap Score and explanation only) or **Recommend** (also suggests an Outcome with reasons). The Assessor always makes the Decision.
+_Avoid_: AI mode, automation level
 _Avoid_: Similarity, match score
 
 ### Approval
