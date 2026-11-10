@@ -61,3 +61,17 @@ Some of these skills (`grill-with-docs`, `wayfinder`, `to-spec`, `to-tickets`, `
 ## Next step
 
 Approve or edit the research questions above, then run `/research` on them.
+
+## Update: first grilling session (2026-11-10)
+
+Product decisions are recorded in `GLOSSARY.md`, `docs/adr/0001` to `0003`, and research in `docs/research/`. Summary:
+
+- **Product:** your own product, modelled on RMIT's process, built for any Home Institution. Pitch to RMIT University Pathways went well but it was the wrong audience. Buyer is the Home Institution.
+- **First release:** pre-approval wedge only. Study Plan (replaces Application/Shortlist) holds a credit-based Semester Load plus Backup Courses. Approved Study Plans are exported for the existing mobility portal. Course changes after arrival are deferred. Replacing the mobility platform is the long-term vision only.
+- **Data:** students supply Partner Course outlines; Partner Courses are shared across Home Institutions, Course Mappings and Precedents are private (ADR-0001). Home Institutions supply Home Unit outlines. The Operator merges duplicate Partner Courses.
+- **Evidence:** Content Overlap Score by AI comparison of outlines, shown to students and Assessors. AI Assistance Level is Explain or Recommend; the AI never decides (ADR-0002). Student context sent to the AI is a setting to test. Precedents carry a Review By Date (default 3 years), Lapsed Precedents count less, Outline Snapshots are stored, and a Content Change Hint flags likely drift.
+- **Testing:** options are switchable settings per Home Institution, tried in moderated sessions with your contacts; the product logs time per assessment.
+- **Engineering:** demo students with real outlines (no real student data, no SSO yet). React + Supabase (ADR-0003). Fresh build; surviving v1 rules ported test-first. AI provider decided at the first AI ticket.
+- **Parked:** the approval workflow (Stages, Staff vs Assessor steps, per-course Decisions, Combination Precedent, Document Checklist), waiting on answers to `docs/research/stakeholder-questionnaire.md`.
+
+**Next step:** send the questionnaire. When answers come back, run `/grill-with-docs` on the workflow branch, then `/to-spec` and `/to-tickets`.
