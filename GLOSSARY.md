@@ -140,7 +140,7 @@ A student's proposed Semester Load plus Backup Courses at one Partner Institutio
 _Avoid_: Application, Shortlist, Learning Agreement (the Erasmus name), submission, request, case
 
 **Stage**:
-Where a Study Plan is in the pipeline: **Draft**, **Submitted** (awaiting Staff Check), **With Assessor**, **Decided** (every course has an Outcome), or **Exported** (handed off to the Home Institution's mobility portal). Every course in a Study Plan always shares the same Stage. _(Provisional, pending stakeholder answers.)_
+Where a Study Plan is in the pipeline: **Draft**, **Submitted** (awaiting Staff Check), **With Assessor**, **Decided** (every course has an Outcome), or **Exported** (handed off to the Home Institution's mobility portal as a PDF Study Plan). A Study Plan can be Exported only when its approved courses meet the semester Home Credit requirement. Every course in a Study Plan always shares the same Stage. _(Provisional, pending stakeholder answers.)_
 _Avoid_: Status (in domain language; "Status Board" and status screens are UI names only)
 
 **Submission Checks**:
@@ -155,6 +155,10 @@ An Assessor examining a single course of a Study Plan, with the whole Study Plan
 
 **Decision**:
 The Outcome an Assessor gives to one course in a Study Plan, made one course at a time and never as a bundle.
+
+**Course Revision**:
+A Student's change to one Denied or More Info Requested course in a Study Plan: answering the request, swapping in a Backup Course, or proposing a new Partner Course for that place. Only the revised course returns to the Assessor; decided courses keep their Outcomes and the Staff Check is not repeated.
+_Avoid_: Resubmission, amendment
 
 **Outcome**:
 The result of a Decision on a course: **Approved**, **Denied**, or **More Info Requested**.
