@@ -181,7 +181,7 @@ The academic who decides the Outcome for each course in a Study Plan. Each Progr
 _Avoid_: Reviewer, approver
 
 **Institution Admin**:
-The person at a Home Institution who manages its users, imports its Home Unit outlines and sets its AI Assistance Level. A separate role from Staff, even when one person holds both.
+The person at a Home Institution who manages its users and Assessor assignments, imports its Programs and Home Unit outlines, and sets its eligibility thresholds, Credit Conversion and AI Assistance Level. A separate role from Staff, even when one person holds both.
 _Avoid_: Administrator (unqualified), super user
 
 **Operator**:
