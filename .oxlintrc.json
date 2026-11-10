@@ -1,20 +1,63 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc", "import"],
+  "plugins": [
+    "react",
+    "typescript",
+    "oxc",
+    "import"
+  ],
   "rules": {
     "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
+    "react/only-export-components": [
+      "warn",
+      {
+        "allowConstantExport": true
+      }
+    ]
   },
   "overrides": [
     {
-      "files": ["src/domain/**", "src/service/**"],
+      "files": [
+        "src/domain/**",
+        "src/service/**"
+      ],
       "rules": {
         "no-restricted-imports": [
           "error",
           {
             "patterns": [
-              { "group": ["@supabase/*"], "message": "Domain modules never import Supabase (ADR-0003). Go through a port." },
-              { "group": ["**/adapters/**"], "message": "Domain modules depend on ports, not adapters." }
+              {
+                "group": [
+                  "@supabase/*"
+                ],
+                "message": "Domain modules never import Supabase (ADR-0003). Go through a port."
+              },
+              {
+                "group": [
+                  "**/adapters/**"
+                ],
+                "message": "Domain modules depend on ports, not adapters."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": [
+        "**/*.test.ts"
+      ],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "@supabase/*"
+                ],
+                "message": "Service tests run without Supabase, through the in-memory and fake adapters."
+              }
             ]
           }
         ]
