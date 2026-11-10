@@ -75,3 +75,23 @@ Product decisions are recorded in `GLOSSARY.md`, `docs/adr/0001` to `0003`, and 
 - **Parked:** the approval workflow (Stages, Staff vs Assessor steps, per-course Decisions, Combination Precedent, Document Checklist), waiting on answers to `docs/research/stakeholder-questionnaire.md`.
 
 **Next step:** send the questionnaire. When answers come back, run `/grill-with-docs` on the workflow branch, then `/to-spec` and `/to-tickets`.
+
+## Update: workflow round (provisional, 2026-11-10)
+
+The questionnaire hasn't been answered, so these workflow decisions are **provisional**. Check them against the answers when they arrive, and reopen only those that are contradicted.
+
+- Submission Checks run automatically (Eligible, outlines present, credit total met). One Staff Check per Study Plan, never per course.
+- One Assessor per Program (RMIT: Program Coordinator/Manager). Decisions per course, in any order, with the whole Study Plan in view. The Assessor may retarget a Course Mapping to another Remaining Unit or Elective Credit before deciding.
+- Stages: Draft, Submitted, With Assessor, Decided, Exported. A Course Revision sends only the revised course back to the Assessor.
+- Export is a PDF Study Plan, allowed only when approved courses meet the semester Home Credit requirement.
+- Preliminary Study Plans (On Track students) stay in Draft until the student is Eligible.
+- Email notifications on Stage changes and Outcomes.
+- Document Checklist: a current outline per Partner Course (confirm the shared one or upload a newer one). The learning agreement upload is dropped (the export replaces it). GPA and completed units come from demo student records.
+
+**Deferred, to revisit:**
+- Combination Precedent: tracked in issue #1 (industry request).
+- Travel documents (passport, visa, health insurance): out of the first release; how to integrate them is undecided.
+- Course changes after arrival.
+- Real student data: SSO, data residency, student-records integration.
+
+**Next step:** `/to-spec`, then `/to-tickets`. Order tickets so the workflow-independent parts (eligibility, outlines and catalogue, Home Unit import, AI overlap, Precedents, Study Plan builder, export) come before the Staff and Assessor flow.

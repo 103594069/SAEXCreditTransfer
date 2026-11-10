@@ -64,7 +64,7 @@ At least one rule is failed or the credit point threshold is not projected to be
 A specific reason a student's Eligibility Status is Needs Review.
 
 **Preliminary**:
-The state of a Study Plan from an On Track student: exploratory until the student crosses the credit point threshold.
+The state of a Study Plan from an On Track student: it can be built but stays in Draft, and cannot be submitted until the student is Eligible. _(Provisional.)_
 _Avoid_: Provisional, draft
 
 ### Planning an exchange
@@ -144,7 +144,7 @@ Where a Study Plan is in the pipeline: **Draft**, **Submitted** (awaiting Staff 
 _Avoid_: Status (in domain language; "Status Board" and status screens are UI names only)
 
 **Submission Checks**:
-The automatic checks run when a Student submits a Study Plan: Eligibility Status, Document Checklist complete, and Semester Load credit total met.
+The automatic checks run when a Student submits a Study Plan: Eligibility Status is Eligible, Document Checklist complete, and Semester Load credit total met.
 
 **Staff Check**:
 Staff confirming a submitted Study Plan, informed by its Submission Checks, and either passing the whole Study Plan to the Assessor or returning it to the Student. Done once per Study Plan, never per course. _(Provisional, pending stakeholder answers.)_
@@ -165,7 +165,7 @@ The result of a Decision on a course: **Approved**, **Denied**, or **More Info R
 _Avoid_: Result, verdict
 
 **Document Checklist**:
-The supporting documents a student must confirm before a Study Plan can be submitted.
+What a Student must provide before a Study Plan can be submitted: a current outline for every Partner Course in it, Backup Courses included. Where the shared Partner Course already has an outline, the Student confirms it is current for their semester or uploads a newer one. _(Provisional; travel documents such as passport, visa and insurance are out of scope until revisited.)_
 
 ### Roles
 
