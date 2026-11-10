@@ -143,14 +143,18 @@ _Avoid_: Application, Shortlist, Learning Agreement (the Erasmus name), submissi
 Where a Study Plan is in the pipeline: **Submitted**, **With Staff**, **With Assessor**, or **Decision Pending**. Every course in a Study Plan always shares the same Stage.
 _Avoid_: Status (in domain language; "Status Board" and status screens are UI names only)
 
-**Staff Review**:
-Staff checking and forwarding a single course of a Study Plan to the Assessor. The Study Plan advances only once every course in it is forwarded.
+**Submission Checks**:
+The automatic checks run when a Student submits a Study Plan: Eligibility Status, Document Checklist complete, and Semester Load credit total met.
+
+**Staff Check**:
+Staff confirming a submitted Study Plan, informed by its Submission Checks, and either passing the whole Study Plan to the Assessor or returning it to the Student. Done once per Study Plan, never per course. _(Provisional, pending stakeholder answers.)_
+_Avoid_: Staff review, forwarding
 
 **Assessor Review**:
 An Assessor opening a single course of a Study Plan to examine it. Decisions unlock only once every course has been reviewed.
 
 **Decision**:
-The Outcome an Assessor gives to one course at Decision Pending, made one course at a time and never as a bundle.
+The Outcome an Assessor gives to one course in a Study Plan, made one course at a time and never as a bundle.
 
 **Outcome**:
 The result of a Decision on a course: **Approved**, **Denied**, or **More Info Requested**.
@@ -165,11 +169,11 @@ The supporting documents a student must confirm before a Study Plan can be submi
 The Home Institution student planning an exchange who builds and submits a Study Plan.
 
 **Staff**:
-Administrative reviewers who do the first pass on a Study Plan and forward courses to the Assessor.
+Exchange office staff (Global Experience at RMIT) who do the Staff Check on a Study Plan and export it once decided.
 _Avoid_: Admin, coordinator
 
 **Assessor**:
-The academic who decides the Outcome for each course.
+The academic who decides the Outcome for each course in a Study Plan. Each Program has one Assessor (at RMIT, its Program Coordinator/Manager), who decides every course in that Program's Study Plans. _(Provisional, pending stakeholder answers.)_
 _Avoid_: Reviewer, approver
 
 **Institution Admin**:
