@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import type { Role } from '../domain/roles.ts'
-import type { UserSession } from '../service/creditApproval.ts'
+import { UnknownUserError, type UserSession } from '../service/creditApproval.ts'
 import { creditApproval, supabase } from './creditApproval.ts'
 import { AssessorScreen, InstitutionAdminScreen, OperatorScreen, StaffScreen, StudentScreen } from './screens/RoleScreens.tsx'
 import { SignInScreen } from './screens/SignInScreen.tsx'
-import { errorMessage, isNetworkFailure } from './useAsync.ts'
+import { errorMessage } from './useAsync.ts'
 
 /** One screen per role. Only the active role's screen is ever rendered. */
 const ROLE_SCREENS: Record<Role, (props: { userId: string }) => ReactNode> = {
@@ -15,6 +15,9 @@ const ROLE_SCREENS: Record<Role, (props: { userId: string }) => ReactNode> = {
   'Institution Admin': InstitutionAdminScreen,
   Operator: OperatorScreen,
 }
+
+/** Online read-back attempts after a failed role switch, about a minute with supabase-js's own retries. */
+const READ_BACK_ATTEMPTS = 6
 
 function withHint(message: string, hint: string): string {
   return `${/[.!?…]$/.test(message) ? message : `${message}.`} ${hint}`
@@ -64,7 +67,7 @@ function SignedIn({ userId }: { userId: string }) {
 
   // One switch at a time, so replies cannot land out of order. After a failure the stored
   // role may or may not have changed, so the switcher stays locked until the stored session
-  // has been read back. Network failures are retried; anything else gives up with a hint.
+  // has been read back (see readBackSession); if it cannot be, it gives up with a hint.
   async function switchRole(role: Role) {
     setError(null)
     setSwitching(true)
@@ -87,14 +90,20 @@ function SignedIn({ userId }: { userId: string }) {
     }
   }
 
-  /** The stored session, retried through network failures; null once retrying cannot help. */
+  /**
+   * The stored session, read back after a failed switch. Waits while offline, and retries any
+   * other failure (dropped connection, gateway 502/503 while the server restarts) up to
+   * READ_BACK_ATTEMPTS times. Null once retrying cannot help: an unknown account, too many
+   * failures, or the screen has gone (signed out).
+   */
   async function readBackSession(): Promise<UserSession | null> {
+    let attempts = 0
     while (mounted.current) {
       if (navigator.onLine) {
         try {
           return await creditApproval.getSession(userId)
         } catch (e) {
-          if (!isNetworkFailure(e)) return null
+          if (e instanceof UnknownUserError || ++attempts >= READ_BACK_ATTEMPTS) return null
         }
       }
       await new Promise((resolve) => setTimeout(resolve, 2000))
