@@ -172,6 +172,14 @@ _Avoid_: Admin, coordinator
 The academic who decides the Outcome for each course.
 _Avoid_: Reviewer, approver
 
+**Institution Admin**:
+The person at a Home Institution who manages its users, imports its Home Unit outlines and sets its AI Assistance Level. A separate role from Staff, even when one person holds both.
+_Avoid_: Administrator (unqualified), super user
+
+**Operator**:
+The person running the product across all Home Institutions, who merges duplicate Partner Course records and corrects shared data.
+_Avoid_: Platform admin, curator
+
 ## Relationships
 
 - A **Home Institution** has many **Programs**; a **Program** has many **Home Units**; a **Student** has many **Remaining Units** within their Program
