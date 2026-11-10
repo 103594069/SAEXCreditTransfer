@@ -25,7 +25,9 @@ create table public.user_roles (
   primary key (user_id, role)
 );
 
--- Demo Outbox: the demo Notifier stores emails here instead of delivering them.
+-- Demo Outbox: emails the product would have sent, kept here instead of delivered.
+-- Only server functions (service role) write it; signed-in users get no access, so
+-- nobody can plant an email a moderator would read as product-sent.
 create table public.demo_outbox (
   id bigint generated always as identity primary key,
   to_address text not null,
@@ -41,9 +43,9 @@ alter table public.demo_outbox enable row level security;
 
 -- Signed-in users may change only their own active role, and only to a role they hold.
 revoke all on public.home_institutions, public.user_accounts, public.user_roles, public.demo_outbox from anon, authenticated;
+-- (demo_outbox keeps no grant to anon or authenticated.)
 grant select on public.home_institutions, public.user_accounts, public.user_roles to authenticated;
 grant update (active_role) on public.user_accounts to authenticated;
-grant insert (to_address, subject, body) on public.demo_outbox to authenticated;
 
 create policy "read own account" on public.user_accounts
   for select to authenticated using (id = (select auth.uid()));
@@ -71,6 +73,3 @@ create policy "read own or, as Operator, every Home Institution" on public.home_
       where r.user_id = (select auth.uid()) and r.role = 'Operator'
     )
   );
-
-create policy "queue demo emails" on public.demo_outbox
-  for insert to authenticated with check (true);

@@ -1,13 +1,16 @@
 import type { Notifier } from '../../service/ports.ts'
 import type { SupabaseClient } from './client.ts'
 
-/** Demo Notifier: stores every email in the Demo Outbox table; nothing reaches a real inbox. */
+/**
+ * Notifier through the `send-notification` server function, which writes the Demo Outbox
+ * with the service role (nothing reaches a real inbox). Browsers have no write access to the
+ * outbox, so a signed-in user cannot plant an email. The function arrives with the first
+ * notification ticket.
+ */
 export function createDemoOutboxNotifier(client: SupabaseClient): Notifier {
   return {
     async send(email) {
-      const { error } = await client
-        .from('demo_outbox')
-        .insert({ to_address: email.to, subject: email.subject, body: email.body })
+      const { error } = await client.functions.invoke('send-notification', { body: email })
       if (error) throw error
     },
   }
