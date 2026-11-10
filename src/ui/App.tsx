@@ -16,8 +16,9 @@ const ROLE_SCREENS: Record<Role, (props: { userId: string }) => ReactNode> = {
   Operator: OperatorScreen,
 }
 
-/** Online read-back attempts after a failed role switch, about a minute with supabase-js's own retries. */
-const READ_BACK_ATTEMPTS = 6
+/** How long, online, the read-back after a failed role switch keeps retrying. */
+const READ_BACK_WINDOW_MS = 60_000
+const READ_BACK_PAUSE_MS = 2_000
 
 function withHint(message: string, hint: string): string {
   return `${/[.!?…]$/.test(message) ? message : `${message}.`} ${hint}`
@@ -91,22 +92,24 @@ function SignedIn({ userId }: { userId: string }) {
   }
 
   /**
-   * The stored session, read back after a failed switch. Waits while offline, and retries any
-   * other failure (dropped connection, gateway 502/503 while the server restarts) up to
-   * READ_BACK_ATTEMPTS times. Null once retrying cannot help: an unknown account, too many
-   * failures, or the screen has gone (signed out).
+   * The stored session, read back after a failed switch. Waits while offline (that time does
+   * not count), and retries any other failure (dropped connection, gateway 502/503 while the
+   * server restarts) for READ_BACK_WINDOW_MS. Null once retrying cannot help: an unknown
+   * account, the window has passed, or the screen has gone (signed out).
    */
   async function readBackSession(): Promise<UserSession | null> {
-    let attempts = 0
+    let deadline = Date.now() + READ_BACK_WINDOW_MS
     while (mounted.current) {
       if (navigator.onLine) {
         try {
           return await creditApproval.getSession(userId)
         } catch (e) {
-          if (e instanceof UnknownUserError || ++attempts >= READ_BACK_ATTEMPTS) return null
+          if (e instanceof UnknownUserError || Date.now() >= deadline) return null
         }
+      } else {
+        deadline += READ_BACK_PAUSE_MS
       }
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      await new Promise((resolve) => setTimeout(resolve, READ_BACK_PAUSE_MS))
     }
     return null
   }
