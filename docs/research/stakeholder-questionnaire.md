@@ -46,3 +46,14 @@
 
 1. If you could fix one thing about this process, what would it be?
 2. Is there anyone else I should talk to?
+
+## E. Approvers and Global Experience: precedent validity (optional)
+
+From the drift research in `docs/research/precedent-drift.md`.
+
+1. Does RMIT set any validity period on approved course mappings or Study Plans? Would 3 years be a reasonable default?
+2. Can one student's approval be reused for another student, and for how long?
+3. What counts as a material change to a partner course: learning outcomes, assessment, contact hours, credit, prerequisites?
+4. When an RMIT unit is revised or recoded, do its past approvals still stand?
+5. Would approvers re-confirm expired approvals in bulk if asked? Who would own that?
+6. Is an expired approval still useful as a guide, or should it be hidden?
