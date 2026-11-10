@@ -98,7 +98,7 @@ An approved Course Mapping from a past Study Plan, with the year it was approved
 _Avoid_: History, past approval
 
 **Combination Precedent**:
-A record of a complete Semester Load having been approved together as a unit, with the year.
+A record of a complete Semester Load having been approved together as a unit, with the year. _(Deferred: not in the first release. Requested by industry contacts; kept as a future enhancement.)_
 _Avoid_: Past package, bundle precedent
 
 **Review By Date**:
@@ -140,7 +140,7 @@ A student's proposed Semester Load plus Backup Courses at one Partner Institutio
 _Avoid_: Application, Shortlist, Learning Agreement (the Erasmus name), submission, request, case
 
 **Stage**:
-Where a Study Plan is in the pipeline: **Submitted**, **With Staff**, **With Assessor**, or **Decision Pending**. Every course in a Study Plan always shares the same Stage.
+Where a Study Plan is in the pipeline: **Draft**, **Submitted** (awaiting Staff Check), **With Assessor**, **Decided** (every course has an Outcome), or **Exported** (handed off to the Home Institution's mobility portal). Every course in a Study Plan always shares the same Stage. _(Provisional, pending stakeholder answers.)_
 _Avoid_: Status (in domain language; "Status Board" and status screens are UI names only)
 
 **Submission Checks**:
@@ -151,7 +151,7 @@ Staff confirming a submitted Study Plan, informed by its Submission Checks, and 
 _Avoid_: Staff review, forwarding
 
 **Assessor Review**:
-An Assessor opening a single course of a Study Plan to examine it. Decisions unlock only once every course has been reviewed.
+An Assessor examining a single course of a Study Plan, with the whole Study Plan in view. Courses can be decided in any order. Before deciding, the Assessor may retarget the course's Course Mapping to a different Remaining Unit or to Elective Credit; the change is recorded and shown to the Student.
 
 **Decision**:
 The Outcome an Assessor gives to one course in a Study Plan, made one course at a time and never as a bundle.
@@ -191,6 +191,6 @@ _Avoid_: Platform admin, curator
 - A **Home Institution** owns its **Course Mappings**; each pairs one **Partner Course** with one **Home Unit** or **Elective Credit**
 - A **Semester Load** belongs to one **Program** and one **Partner Institution** and contains enough **Partner Courses** to meet the full-semester **Home Credit** requirement after **Credit Conversion**
 - A **Study Plan** holds one **Semester Load** and any number of **Backup Courses**, all at one **Partner Institution**
-- A **Study Plan** moves through its **Stages** as one unit; each course in it receives its own **Outcome** only at Decision Pending
+- A **Study Plan** moves through its **Stages** as one unit; each course in it receives its own **Outcome** while the Study Plan is With Assessor
 - An **Assessor** approving a course turns its **Course Mapping** into a **Precedent**, which changes future **Precedent Scores**
 - A **Combination Precedent** refers to a **Semester Load**; a **Precedent** refers to a **Course Mapping**
