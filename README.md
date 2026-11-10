@@ -1,99 +1,81 @@
-# SAEX Credit Transfer — Prototype
+# SAEX Credit Transfer
 
-A clickable prototype of a platform for RMIT's outbound Study Abroad Exchange
-(SAEX) credit approval process, built for a stakeholder pitch. All data is
-mocked and seeded on load; anything that needs to persist between reloads
-(mock login, shortlist drafts, application/precedent state) is kept in
-`localStorage`. There is no backend, no external API calls, and no real
-authentication.
+A web product for outbound study abroad exchange credit pre-approval, modelled on
+RMIT's Study Abroad Exchange (SAEX) process and built for any Home Institution.
+Domain language is in [`GLOSSARY.md`](GLOSSARY.md), decisions in [`docs/adr/`](docs/adr/).
+
+The v1 clickable prototype is kept for reference on the `prototype/v1` tag
+(`git checkout prototype/v1`). It is not part of this build.
 
 ## Stack
 
-React + Vite + Tailwind CSS. No other runtime dependencies.
+TypeScript React (Vite) front end on Supabase (ADR-0003): Postgres, email sign-in,
+storage and server functions. Run locally with the Supabase CLI, which needs Docker.
 
-## Running it
+## Running it locally
 
-```
+```bash
 npm install
+```
+
+```bash
+npx supabase start
+```
+
+```bash
+npx supabase db reset
+```
+
+```bash
 npm run dev
 ```
 
-## What's in it
+Then open <http://localhost:5173>. `supabase db reset` applies the migrations in
+`supabase/migrations/` and loads the demo data in `supabase/seed.sql`; run it again at
+any time to return to a clean demo. `.env.development` points the app at the local
+Supabase defaults; if `npx supabase status` prints a different API URL or publishable
+key, put yours in `.env.development.local`.
 
-Use the **Student / Staff / Assessor** toggle in the header to switch
-perspectives — all three share the same underlying mock data, so actions
-taken in one view (e.g. an assessor approving a course) are reflected live
-in the others (e.g. the student's status tracker, the shared status board).
+If Docker cannot pull from `public.ecr.aws`, start Supabase from Docker Hub instead:
 
-**Student**
-1. *Sign in* — mock login: pick a demo student.
-2. *Profile* — the landing page after login. Auto-populated identity,
-   academic standing (GPA, credit points completed/remaining), and RMIT's
-   real outbound exchange eligibility rules evaluated individually — GPA
-   ≥2.0/4.0, ≥72cp completed *by departure* (early application is allowed if
-   projected to clear it in time), and ≥12cp remaining after a standard
-   exchange semester to retain OS-HELP loan eligibility — combined into an
-   overall **Eligible / On Track / Needs Review** status that gates the
-   "Start Exchange Journey" button (active, active-but-preliminary, or
-   disabled with the specific blockers listed). Also lists every remaining
-   course in the student's actual 24-course degree structure.
-3. *Find Institutions* — partner institutions ranked using historical
-   precedent from students in the same degree and how well each institution's
-   course package covers the student's remaining units.
-4. Institution detail — a full semester load (always 4 courses, never a
-   single course), each mapped to its RMIT unit with two independent scores:
-   a directional **precedent score** (Likely / Possible / Uncommon, from
-   historical outcomes) and a **content overlap score** (simple topic-keyword
-   match against the RMIT unit) — shown side by side with a "why" note each,
-   never blended into one number.
-5. *Past Combinations* — browse full course packages previously approved as
-   a unit (not just individual course precedent), ranked by how established
-   each combination is. Each course is flagged "Already completed" if its
-   mapped unit isn't in the logged-in student's remaining units, and any
-   combination can be shortlisted directly — reuses the same shortlist/
-   submission flow as picking an institution from Recommendations.
-6. *My Shortlist* — review the load and submit; blocked until a document
-   checklist is fully checked. Students in "On Track" (preliminary) status
-   see a persistent banner reminding them the application is exploratory
-   until they cross the 72cp threshold.
-7. *My Application* — a live tracker for the whole shortlist. The Profile
-   page links straight here once an application exists, instead of
-   restarting it.
+```bash
+SUPABASE_INTERNAL_IMAGE_REGISTRY=docker.io npx supabase start
+```
 
-**How the pipeline actually moves**
+Stop the local stack with `npx supabase stop`.
 
-The 4-course shortlist is a single application, and it moves through
-Submitted → With Staff → With Assessor → Decision Pending as one unit — all
-4 courses always share the same stage. Staff and assessors still review each
-course individually (that action is never bundled), but the application
-only advances once every course in it has been reviewed. Only at Decision
-Pending does each course get its own independent outcome — Approved / Denied
-/ More Info Requested — decided one at a time, never as a bundle.
+## Demo accounts
 
-**Staff**
-- *Review Queue* — one row per application. Opening it shows all 4 courses
-  together; forwarding each one to the assessor is still an individual
-  action, and the application only moves on once all 4 have been forwarded.
+Every demo account's password is `demo-password`. The sign-in screen lists them.
 
-**Assessor**
-- *Assessor Queue* — applications forwarded by staff, plus applications
-  already at Decision Pending with courses still undecided. Each course
-  shows both scores plus a context-flags panel (accreditation type, and a
-  precedent recency caution when the most recent match is dated). Opening a
-  course marks it reviewed; once every course in the application has been
-  opened this way, decisions unlock for all of them — still made one course
-  at a time, never bundled.
-- Approving a course visibly appends to the mock precedent dataset, so the
-  precedent score for that course — and future recommendations — reflect it
-  immediately.
+| Email | Roles |
+| --- | --- |
+| `student@rmit-demo.test` | Student |
+| `staff@rmit-demo.test` | Staff |
+| `assessor@rmit-demo.test` | Assessor |
+| `admin@rmit-demo.test` | Institution Admin |
+| `operator@saex-demo.test` | Operator |
+| `staff.admin@rmit-demo.test` | Staff and Institution Admin (switch with "Acting as") |
 
-**Shared**
-- *Status Board* — mixes two granularities on purpose: applications still in
-  Submitted / With Staff / With Assessor show as a single card, while
-  applications at Decision Pending break out into one card per course under
-  Approved / Denied / More Info Requested / Awaiting Decision.
+All but the Operator belong to the demo Home Institution, RMIT (demo).
 
-## Resetting demo data
+## Checks
 
-Clear `localStorage` for the site (or open in a private window) to reseed
-the mock data from scratch.
+```bash
+npm run check
+```
+
+runs lint (`npm run lint`), the typecheck (`npm run typecheck`) and the tests
+(`npm test`). CI runs the same on every push (`.github/workflows/ci.yml`).
+
+## Code layout
+
+- `src/domain/`: plain TypeScript rules (roles, permissions). Never imports Supabase.
+- `src/service/`: the Credit Approval service, the single entry point for user actions,
+  and its ports (Storage, Outline Comparison, Notifier). Never imports Supabase or an
+  adapter; lint enforces both.
+- `src/adapters/memory`, `src/adapters/fake`: the in-memory Storage adapter and fake
+  ports used in tests.
+- `src/adapters/supabase`: the Supabase adapters used by the app.
+- `src/ui/`: React screens. The composition root is `src/ui/creditApproval.ts`.
+- `supabase/`: local Supabase config, migrations and seed data.
