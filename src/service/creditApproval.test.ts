@@ -164,6 +164,21 @@ describe('Credit Approval service: each role screen is open only to its active r
     Operator: (service, userId) => service.operatorHome(userId),
   }
 
+  const atDemo = { displayName: 'Eve Every', homeInstitution: { id: 'hi-demo', name: 'Demo Home Institution' } }
+  const expectedHome: Record<Role, unknown> = {
+    Student: atDemo,
+    Staff: atDemo,
+    Assessor: atDemo,
+    'Institution Admin': atDemo,
+    Operator: {
+      displayName: 'Eve Every',
+      homeInstitutions: [
+        { id: 'hi-demo', name: 'Demo Home Institution' },
+        { id: 'hi-other', name: 'Other Home Institution' },
+      ],
+    },
+  }
+
   for (const activeRole of ROLES) {
     for (const screenRole of ROLES) {
       const allowed = activeRole === screenRole
@@ -173,7 +188,7 @@ describe('Credit Approval service: each role screen is open only to its active r
 
         const opening = homeQueries[screenRole](service, 'u-every-role')
 
-        if (allowed) await expect(opening).resolves.toBeDefined()
+        if (allowed) await expect(opening).resolves.toEqual(expectedHome[screenRole])
         else await expect(opening).rejects.toBeInstanceOf(NotPermittedError)
       })
     }
