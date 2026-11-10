@@ -12,7 +12,7 @@ function Screen({ title, children }: { title: string; children: ReactNode }) {
   )
 }
 
-function Loading<T>({ state, children }: { state: ReturnType<typeof useAsync<T>>; children: (value: T) => ReactNode }) {
+function AsyncView<T>({ state, children }: { state: ReturnType<typeof useAsync<T>>; children: (value: T) => ReactNode }) {
   if (state.status === 'loading') return <p className="text-paper-500">Loading…</p>
   if (state.status === 'failed')
     return (
@@ -27,7 +27,7 @@ function HomeScreen({ title, load, userId, intro }: { title: string; load: (user
   const state = useAsync(() => load(userId), userId)
   return (
     <Screen title={title}>
-      <Loading state={state}>
+      <AsyncView state={state}>
         {(home) => (
           <>
             <p>
@@ -36,7 +36,7 @@ function HomeScreen({ title, load, userId, intro }: { title: string; load: (user
             <p className="mt-2 text-paper-600">{intro}</p>
           </>
         )}
-      </Loading>
+      </AsyncView>
     </Screen>
   )
 }
@@ -45,7 +45,7 @@ export function OperatorScreen({ userId }: { userId: string }) {
   const state = useAsync(() => creditApproval.operatorHome(userId), userId)
   return (
     <Screen title="Operator">
-      <Loading state={state}>
+      <AsyncView state={state}>
         {(home) => (
           <>
             <p>Welcome, {home.displayName}. You run the shared catalogue across every Home Institution.</p>
@@ -57,7 +57,7 @@ export function OperatorScreen({ userId }: { userId: string }) {
             </ul>
           </>
         )}
-      </Loading>
+      </AsyncView>
     </Screen>
   )
 }
